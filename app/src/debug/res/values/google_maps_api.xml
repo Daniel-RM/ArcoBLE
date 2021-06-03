@@ -1,0 +1,24 @@
+<resources>
+    <!--
+    TODO: Before you run your application, you need a Google Maps API key.
+
+    To get one, follow this link, follow the directions and press "Create" at the end:
+
+    https://console.developers.google.com/flows/enableapi?apiid=maps_android_backend&keyType=CLIENT_SIDE_ANDROID&r=94:E3:EB:37:C1:BF:4A:C3:2D:F9:5D:4A:C6:7F:7E:A3:9C:40:F6:E4%3Bcom.example.arcoble
+
+    You can also add your credentials to an existing key, using these values:
+
+    Package name:
+    com.example.arcoble
+
+    SHA-1 certificate fingerprint:
+    94:E3:EB:37:C1:BF:4A:C3:2D:F9:5D:4A:C6:7F:7E:A3:9C:40:F6:E4
+
+    Alternatively, follow the directions here:
+    https://developers.google.com/maps/documentation/android/start#get-key
+
+    Once you have your key (it starts with "AIza"), replace the "google_maps_key"
+    string in this file.
+    -->
+    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyCii0NHCQHr0wY3WYM_EcfUYha_gWGR_Y8</string>
+</resources>

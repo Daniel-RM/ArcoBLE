@@ -1,0 +1,36 @@
+<resources>
+    <string name="app_name">ArcoBLE</string>
+    <string name="salir">Salir</string>
+    <string name="escanear">Escanear</string>
+    <string name="estado">Estado</string>
+    <string name="posicion">Ver Mapa</string>
+    <string name="rele">Relé</string>
+    <string name="id">Cambiar ID</string>
+    <string name="can">CAN</string>
+    <string name="idModulo">ID Módulo:</string>
+    <string name="rssi">Señal:</string>
+    <string name="desconectar">Desconectar</string>
+
+
+    <!--Cabeceras TextView´s-->
+    <string name="conexionRed">Conexión Red: </string>
+    <string name="conexionInternet">Conexión Internet: </string>
+    <string name="servicioARCO">Servicio ARCO: </string>
+    <string name="servicioASOS">Servicio ASOS: </string>
+    <string name="marcha">Estado marcha: </string>
+    <string name="cuba">Vueltas p/m: </string>
+    <string name="analogica">Presión: </string>
+    <string name="analogica2">Temperatura: </string>
+    <string name="pulsos">Contador de Pulsos: </string>
+    <string name="estadoGPS">Estado GPS: </string>
+    <string name="tramaNS">Curso N/S: </string>
+    <string name="tramaEW">Curso E/O: </string>
+    <string name="latitud">Latitud: </string>
+    <string name="longitud">Longitud: </string>
+    <string name="velocidad">Velocidad: </string>
+    <string name="satelites">Nº de Satélites: </string>
+    <string name="orientacion">Orientación: </string>
+    <string name="giroCuba">Cuba: </string>
+    <string name="todo">TODO</string>
+    <string name="title_activity_maps">Map</string>
+</resources>
