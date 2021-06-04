@@ -16,9 +16,9 @@
     <TextView
         android:id="@+id/tvEstado"
         android:layout_width="0dp"
-        android:layout_height="25dp"
+        android:layout_height="50dp"
         android:layout_marginTop="20dp"
-        android:background="@color/teal_700"
+        android:background="@color/verdeArco"
         android:textAlignment="center"
         android:textColor="@color/black"
         android:textSize="18sp"
@@ -34,8 +34,8 @@
         android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
         android:textAlignment="center"
-        android:textColor="@color/teal_700"
-        android:textSize="16sp"
+        android:textColor="@color/verdeArco"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -45,7 +45,7 @@
     <LinearLayout
         android:id="@+id/layConexion"
         android:layout_width="200dp"
-        android:layout_height="211dp"
+        android:layout_height="185dp"
         android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
         android:orientation="vertical"
@@ -53,9 +53,16 @@
         app:layout_constraintTop_toBottomOf="@+id/tvEstado2">
 
         <TextView
+            android:id="@+id/tvRssi"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:text="@string/rssi"
+            android:textColor="@color/black" />
+
+        <TextView
             android:id="@+id/tvConexionRed"
             android:layout_width="match_parent"
-            android:layout_height="25dp"
+            android:layout_height="35dp"
             android:text="@string/conexionRed"
             android:textColor="@color/black"
             app:layout_constraintStart_toStartOf="parent"
@@ -75,22 +82,15 @@
             android:id="@+id/tvServicio"
             android:layout_width="match_parent"
             android:layout_height="35dp"
-            android:textColor="@color/black"
-            android:text="@string/servicioARCO" />
-
-        <TextView
-            android:id="@+id/tvRssi"
-            android:layout_width="match_parent"
-            android:layout_height="35dp"
-            android:textColor="@color/black"
-            android:text="@string/rssi" />
+            android:text="@string/servicioARCO"
+            android:textColor="@color/black" />
 
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/layCamion"
         android:layout_width="200dp"
-        android:layout_height="185dp"
+        android:layout_height="160dp"
         android:orientation="vertical"
         app:layout_constraintStart_toEndOf="@+id/layConexion"
         app:layout_constraintTop_toBottomOf="@+id/tvMarcha">
@@ -100,36 +100,37 @@
             android:id="@+id/tvPulsos"
             android:layout_width="match_parent"
             android:layout_height="25dp"
-            android:textColor="@color/black"
-            android:text="@string/pulsos" />
+            android:text="@string/pulsos"
+            android:textColor="@color/black" />
 
         <TextView
             android:id="@+id/tvAnalogica"
             android:layout_width="match_parent"
             android:layout_height="25dp"
-            android:textColor="@color/black"
-            android:text="@string/analogica" />
+            android:text="@string/analogica"
+            android:textColor="@color/black" />
 
         <TextView
             android:id="@+id/tvAnalogica2"
             android:layout_width="match_parent"
             android:layout_height="25dp"
-            android:textColor="@color/black"
-            android:text="@string/analogica2" />
+            android:text="@string/analogica2"
+            android:textColor="@color/black" />
 
         <TextView
             android:id="@+id/tvCuba"
             android:layout_width="match_parent"
             android:layout_height="35dp"
-            android:textColor="@color/black"
-            android:text="@string/giroCuba" />
+            android:text="@string/giroCuba"
+            android:textColor="@color/black" />
 
         <TextView
             android:id="@+id/tvGiroCuba"
             android:layout_width="match_parent"
-            android:layout_height="25dp"
-            android:textColor="@color/black"
-            android:text="@string/cuba" />
+            android:layout_height="35dp"
+            android:paddingTop="10dp"
+            android:text="@string/cuba"
+            android:textColor="@color/black" />
 
     </LinearLayout>
 
@@ -146,69 +147,55 @@
     <ImageView
         android:id="@+id/ledMarcha"
         android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:layout_marginStart="5dp"
+        android:layout_height="25dp"
         android:layout_marginTop="10dp"
+        android:paddingBottom="5dp"
         android:contentDescription="@string/todo"
-        android:src="@drawable/led_apagado"
+        android:src="@drawable/gris"
         app:layout_constraintStart_toEndOf="@+id/tvMarcha"
         app:layout_constraintTop_toBottomOf="@+id/tvEstado2" />
 
-    <TextView
-        android:id="@+id/tvTrama"
-        android:layout_width="0dp"
+    <ImageView
+        android:id="@+id/ledGPS"
+        android:layout_width="20dp"
         android:layout_height="25dp"
-        android:layout_marginStart="10dp"
-        android:textColor="@color/red"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/layConexion" />
+        android:paddingBottom="5dp"
+        android:contentDescription="@string/todo"
+        android:src="@drawable/gris"
+        app:layout_constraintStart_toEndOf="@+id/tvEstadoGPS"
+        app:layout_constraintTop_toBottomOf="@+id/tvSatelites" />
 
     <LinearLayout
         android:id="@+id/layPosicion1"
         android:layout_width="200dp"
-        android:layout_height="220dp"
+        android:layout_height="200dp"
         android:layout_marginStart="10dp"
         android:orientation="vertical"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvTrama">
+        app:layout_constraintTop_toBottomOf="@+id/layConexion">
 
-
-        <TextView
-            android:id="@+id/tvTramaNS"
-            android:layout_width="match_parent"
-            android:layout_height="25dp"
-            android:textColor="@color/black"
-            android:text="@string/tramaNS" />
 
         <TextView
             android:id="@+id/tvLatitud"
             android:layout_width="match_parent"
             android:layout_height="25dp"
-            android:textColor="@color/black"
-            android:text="@string/latitud" />
+            android:text="@string/latitud"
+            android:textColor="@color/black" />
 
         <TextView
             android:id="@+id/tvLongitud"
             android:layout_width="match_parent"
             android:layout_height="25dp"
-            android:textColor="@color/black"
-            android:text="@string/longitud" />
-
-        <TextView
-            android:id="@+id/tvEstadoGPS"
-            android:layout_width="match_parent"
-            android:layout_height="25dp"
-            android:textColor="@color/black"
-            android:text="@string/estadoGPS" />
+            android:text="@string/longitud"
+            android:textColor="@color/black" />
 
         <Button
             android:id="@+id/btnRele"
             android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            android:drawableRight="@drawable/led_apagado_enano"
+
+            android:drawableRight="@drawable/gris_peque"
             android:text="@string/rele" />
 
         <Button
@@ -216,11 +203,10 @@
             android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            android:drawableRight="@drawable/led_apagado_enano"
+            android:drawableRight="@drawable/gris_peque"
             android:text="@string/can"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/btnRele" />
-
 
 
     </LinearLayout>
@@ -228,50 +214,24 @@
     <LinearLayout
         android:id="@+id/layPosicion2"
         android:layout_width="200dp"
-        android:layout_height="220dp"
+        android:layout_height="150dp"
+        android:layout_marginTop="50dp"
         android:orientation="vertical"
+        android:paddingLeft="18dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvTrama">
+        app:layout_constraintTop_toBottomOf="@+id/layCamion">
 
-
-        <TextView
-            android:id="@+id/tvTramaEW"
-            android:layout_width="match_parent"
-            android:layout_height="25dp"
-            android:textColor="@color/black"
-            android:text="@string/tramaEW" />
-
-        <TextView
-            android:id="@+id/tvSatelites"
-            android:layout_width="match_parent"
-            android:layout_height="25dp"
-            android:textColor="@color/black"
-            android:text="@string/satelites" />
-
-        <TextView
-            android:id="@+id/tvVelocidad"
-            android:layout_width="match_parent"
-            android:layout_height="25dp"
-            android:textColor="@color/black"
-            android:text="@string/velocidad" />
-
-        <TextView
-            android:id="@+id/tvOrientacion"
-            android:layout_width="match_parent"
-            android:layout_height="25dp"
-            android:textColor="@color/black"
-            android:text="@string/orientacion" />
 
         <Button
             android:id="@+id/btnPosicion"
-            android:layout_width="175dp"
+            android:layout_width="165dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:text="@string/posicion" />
 
         <Button
             android:id="@+id/btnID"
-            android:layout_width="175dp"
+            android:layout_width="165dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:text="@string/id" />
@@ -285,11 +245,29 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:layout_marginTop="11dp"
-        android:layout_marginEnd="25dp"
+        android:layout_marginEnd="15dp"
         android:text="@string/desconectar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/layPosicion1" />
+
+    <TextView
+        android:id="@+id/tvSatelites"
+        android:layout_width="170dp"
+        android:layout_height="25dp"
+        android:text="@string/satelites"
+        android:textColor="@color/black"
+        app:layout_constraintStart_toEndOf="@+id/layPosicion1"
+        app:layout_constraintTop_toBottomOf="@+id/layCamion" />
+
+    <TextView
+        android:id="@+id/tvEstadoGPS"
+        android:layout_width="130dp"
+        android:layout_height="25dp"
+        android:text="@string/estadoGPS"
+        android:textColor="@color/black"
+        app:layout_constraintStart_toEndOf="@+id/layPosicion1"
+        app:layout_constraintTop_toBottomOf="@+id/tvSatelites" />
 
     <TextView
         android:id="@+id/tvID"
@@ -306,41 +284,28 @@
 
     <EditText
         android:id="@+id/etID"
-        android:layout_width="wrap_content"
+        android:layout_width="135dp"
         android:layout_height="40dp"
-        android:layout_marginStart="20dp"
+        android:layout_marginStart="10dp"
         android:layout_marginTop="20dp"
-        android:layout_marginEnd="106dp"
         android:ems="10"
         android:importantForAutofill="no"
         android:inputType="textPersonName"
         android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/tvID"
         app:layout_constraintTop_toBottomOf="@+id/btnDesconectar" />
 
-
-    <!--
-
-
-
-        <ImageView
-            android:id="@+id/ledRele"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            app:srcCompat="@drawable/led_apagado" />
-
-        <ImageView
-            android:id="@+id/ledCan"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_marginStart="5dp"
-            android:layout_marginTop="93dp"
-            app:layout_constraintStart_toEndOf="@+id/btnCAN"
-            app:layout_constraintTop_toBottomOf="@+id/tvLongitud"
-            app:srcCompat="@drawable/led_apagado" />    -->
-
+    <Button
+        android:id="@+id/btnCancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="15dp"
+        android:text="@string/cancelar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/etID"
+        app:layout_constraintTop_toBottomOf="@+id/btnDesconectar" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

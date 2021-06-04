@@ -10,6 +10,7 @@
     <string name="idModulo">ID Módulo:</string>
     <string name="rssi">Señal:</string>
     <string name="desconectar">Desconectar</string>
+    <string name="cancelar">Cancelar</string>
 
 
     <!--Cabeceras TextView´s-->

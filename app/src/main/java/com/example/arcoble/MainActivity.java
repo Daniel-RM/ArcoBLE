@@ -32,7 +32,7 @@ import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
-    TextView tvEstado, tvEstado2, tvTrama;
+    TextView tvEstado, tvEstado2;
 
     Button btnSalir, btnScan;
 
@@ -64,7 +64,6 @@ public class MainActivity extends AppCompatActivity {
 
         tvEstado = findViewById(R.id.tvEstado);
         tvEstado2 = findViewById(R.id.tvEstado2);
-        tvTrama = findViewById(R.id.tvTrama);
 
         btnSalir = findViewById(R.id.btnSalir);
         btnScan = findViewById(R.id.btnScan);
@@ -184,13 +183,13 @@ public class MainActivity extends AppCompatActivity {
         public void onLeScan(final BluetoothDevice device, int rssi, byte[] scanRecord) {
             // Se ha encontrado el dispositivo. Podemos obtener la información
             if(device.getName()!=null){
-                Map<String,DeviceBLE> mapa = new HashMap<>();
+                Map<String, DeviceBLE> mapa = new HashMap<>();
 
                 for(DeviceBLE dev : listaDispositivos){
                     mapa.put(dev.toString(),dev);
-
                 }
                 mapa.put(device.getName(), new DeviceBLE(device.getName(), device));
+
 
                 listaDispositivos.clear();
                 listaDispositivos.addAll(mapa.values());

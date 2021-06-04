@@ -31,11 +31,11 @@ import java.util.UUID;
 
 public class DatosActivity extends AppCompatActivity {
 
-    TextView tvEstado, tvEstado2, tvTrama, tvID;
-    TextView tvConexionRed, tvConexionInternet, tvServicio, tvMarcha, tvPulsos, tvAnalogica, tvAnalogica2, tvCuba, tvGiroCuba, tvTramaNS, tvLatitud, tvLongitud, tvEstadoGPS, tvTramaEW, tvSatelites, tvVelocidad, tvOrientacion, tvRssi;
+    TextView tvEstado, tvEstado2, tvID;
+    TextView tvConexionRed, tvConexionInternet, tvServicio, tvMarcha, tvPulsos, tvAnalogica, tvAnalogica2, tvCuba, tvGiroCuba, tvLatitud, tvLongitud, tvEstadoGPS, tvSatelites, tvRssi;
     EditText etID;
-    ImageView ledMarcha;
-    Button btnRele, btnCAN, btnPosicion, btnID, btnDesconectar;
+    ImageView ledMarcha, ledGPS, imgSenal;
+    Button btnRele, btnCAN, btnPosicion, btnID, btnDesconectar, btnCancelar;
 
     Bundle datos;
 
@@ -84,7 +84,6 @@ public class DatosActivity extends AppCompatActivity {
 
         tvEstado = findViewById(R.id.tvEstado);
         tvEstado2 = findViewById(R.id.tvEstado2);
-        tvTrama = findViewById(R.id.tvTrama);
         tvID = findViewById(R.id.tvID);
 
         tvConexionRed = findViewById(R.id.tvConexionRed);
@@ -96,24 +95,22 @@ public class DatosActivity extends AppCompatActivity {
         tvAnalogica2 = findViewById(R.id.tvAnalogica2);
         tvCuba = findViewById(R.id.tvCuba);
         tvGiroCuba = findViewById(R.id.tvGiroCuba);
-        tvTramaNS = findViewById(R.id.tvTramaNS);
         tvLatitud = findViewById(R.id.tvLatitud);
         tvLongitud = findViewById(R.id.tvLongitud);
         tvEstadoGPS = findViewById(R.id.tvEstadoGPS);
-        tvTramaEW = findViewById(R.id.tvTramaEW);
         tvSatelites = findViewById(R.id.tvSatelites);
-        tvVelocidad = findViewById(R.id.tvVelocidad);
-        tvOrientacion = findViewById(R.id.tvOrientacion);
         tvRssi = findViewById(R.id.tvRssi);
-
         etID = findViewById(R.id.etID);
         ledMarcha = findViewById(R.id.ledMarcha);
+        ledGPS = findViewById(R.id.ledGPS);
+        imgSenal = findViewById(R.id.imgSenal);
 
         btnRele = findViewById(R.id.btnRele);
         btnCAN = findViewById(R.id.btnCAN);
         btnPosicion = findViewById(R.id.btnPosicion);
         btnID = findViewById(R.id.btnID);
         btnDesconectar = findViewById(R.id.btnDesconectar);
+        btnCancelar = findViewById(R.id.btnCancel);
 
         //Servicio y característica creados en aplicación smartBasic
         uuidServ = UUID.fromString("00000333-0000-1000-8000-00805f9b34fb");//Servicio
@@ -125,6 +122,9 @@ public class DatosActivity extends AppCompatActivity {
 
         tvID.setVisibility(View.INVISIBLE);
         etID.setVisibility(View.INVISIBLE);
+        btnCancelar.setVisibility(View.INVISIBLE);
+
+        imgSenal.setVisibility(View.VISIBLE);
 
         //////////////////////////////   BOTONES   //////////////////////////////////////////////////////////////
 
@@ -147,7 +147,7 @@ public class DatosActivity extends AppCompatActivity {
 
                 }catch(Exception e){
                     Toast.makeText(getApplicationContext(),"Por favor, conéctese a un dispositivo", Toast.LENGTH_LONG).show();
-                    tvTrama.setText("Por favor, conéctese a un dispositivo");
+                    tvEstado.setText("Por favor, conéctese a un dispositivo");
                 }
             }
         });
@@ -170,7 +170,7 @@ public class DatosActivity extends AppCompatActivity {
                 startActivity(intent);
             }else{
                 Toast.makeText(getApplicationContext(), "No existe posición actual, por favor conéctese a algún dispositivo que le ofrezca sus coordenadas",Toast.LENGTH_LONG).show();
-                tvTrama.setText("Por favor, conéctese a un dispositivo");
+                tvEstado.setText("Por favor, conéctese a un dispositivo");
             }
         });
 
@@ -187,6 +187,7 @@ public class DatosActivity extends AppCompatActivity {
                             public void onClick(DialogInterface dialog, int which) {
                                 tvID.setVisibility(View.VISIBLE);
                                 etID.setVisibility(View.VISIBLE);
+                                btnCancelar.setVisibility(View.VISIBLE);
                                 etID.setHint(dispositivo.getName());
                                 etID.setOnEditorActionListener(new TextView.OnEditorActionListener(){
 
@@ -251,6 +252,17 @@ public class DatosActivity extends AppCompatActivity {
                 AlertDialog titulo = alerta.create();
                 titulo.setTitle("Cambiar ID");
                 titulo.show();
+
+                btnCancelar.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        tvID.setVisibility(View.INVISIBLE);
+                        etID.setVisibility(View.INVISIBLE);
+                        btnCancelar.setVisibility(View.INVISIBLE);
+                        return;
+                    }
+                });
+
             }
         });
 
@@ -368,7 +380,6 @@ public class DatosActivity extends AppCompatActivity {
 
             if (newState == BluetoothProfile.STATE_CONNECTED) {
                 tvEstado.setText("Conectado al servidor GATT. Intentando descubrir servicios");
-                tvTrama.setText("");
                 //boolean rssiStatus = mBluetoothGatt.readRemoteRssi();
 
                 try {
@@ -385,7 +396,6 @@ public class DatosActivity extends AppCompatActivity {
             } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
                 //tvEstado.setText("Desconectado del servidor GATT.");
                 tvEstado.setText("Conexión caída. Reconectando...");
-                //tvTrama.setText("Conexión caída. Reconectando...");
                 gatt.close();
                 mBluetoothGatt = dispositivo.connectGatt(getApplicationContext(),false, mGattCallback);//Intento reconectar
                 Log.e("Conexión caída:","Fallo en conexión. Reconectando...");
@@ -400,6 +410,24 @@ public class DatosActivity extends AppCompatActivity {
             //super.onReadRemoteRssi(gatt, rssi, status);
             if(status==BluetoothGatt.GATT_SUCCESS){
                 tvRssi.setText("Señal: " + rssi + " dBm");
+
+                if(rssi>= -50){
+                    imgSenal.setImageResource(R.drawable.senal_100);
+                }
+                if(rssi>= -65 && rssi< -50){
+                    imgSenal.setImageResource(R.drawable.senal_75);
+                }
+                if(rssi>= -75 && rssi < -65){
+                    imgSenal.setImageResource(R.drawable.senal_50);
+                }
+                if(rssi>= -95 && rssi < -75){
+                    imgSenal.setImageResource(R.drawable.senal_25);
+                }
+                if(rssi < -95){
+                    imgSenal.setImageResource(R.drawable.senal_0);
+                }
+
+
             }
         }
 
@@ -451,8 +479,6 @@ public class DatosActivity extends AppCompatActivity {
             value = new byte[0];
             if (status == BluetoothGatt.GATT_SUCCESS) {
 
-
-                tvTrama.setText("");
                 value = characteristic.getValue();
                 valor = new String(value);
                 Log.d("TAG","onCharacteristicRead: " + valor);
@@ -464,9 +490,9 @@ public class DatosActivity extends AppCompatActivity {
                     //Separo la trama
                     String[] partes = valor.split("\\|");
                     conexionRed = partes[0];
-                    tvConexionRed.setText("Conexión Red: " + asignaConexionRed(conexionRed));
+                    tvConexionRed.setText("Red: " + asignaConexionRed(conexionRed));
                     conexionInternet = partes[1];
-                    tvConexionInternet.setText("Conexión Internet: " + asignaConexionInternet(conexionInternet));
+                    tvConexionInternet.setText("Internet: " + asignaConexionInternet(conexionInternet));
                     servicio = partes[2];
                     tvServicio.setText("Servicio ARCO: " + asignaServicio(servicio));
                     marcha = partes[3];
@@ -483,26 +509,26 @@ public class DatosActivity extends AppCompatActivity {
                     estadoGPS = partes[8];
                     tvEstadoGPS.setText("Estado GPS: " + asignaEstadoGPS(estadoGPS));
                     tramaNS = partes[9];
-                    tvTramaNS.setText("Curso N/S: " + asignaTramaNSEW(tramaNS));
+                    //tvTramaNS.setText("Curso N/S: " + asignaTramaNSEW(tramaNS));
                     latitud = partes[10];
                     tvLatitud.setText("Latitud: " + trataCoordenada(latitud));
                     tramaEW = partes[11];
-                    tvTramaEW.setText("Curso E/O: " + asignaTramaNSEW(tramaEW));
+                    //tvTramaEW.setText("Curso E/O: " + asignaTramaNSEW(tramaEW));
                     longitud = partes[12];
                     tvLongitud.setText("Longitud: " + trataCoordenada(longitud));
-                    orientacion = partes[13];
-                    tvOrientacion.setText("Orientación: " + orientacion + "º");
-                    satelites = partes[14];
+                    //orientacion = partes[13];
+                    //tvOrientacion.setText("Orientación: " + orientacion + "º");
+                    satelites = partes[13];
                     tvSatelites.setText("Nº Satélites: " + satelites);
-                    velocidad = partes[15];
-                    tvVelocidad.setText("Velocidad: " + velocidad + " km/h");
-                    cuba = partes[16];
+                    //velocidad = partes[15];
+                    //tvVelocidad.setText("Velocidad: " + velocidad + " km/h");
+                    cuba = partes[14];
                     tvCuba.setText("Cuba: " + asignaGiro(cuba));
-                    icc = partes[17];
-                    imei = partes[18];
-                    can = partes[19];
+                    icc = partes[15];
+                    imei = partes[16];
+                    can = partes[17];
                     asignaCAN(can);
-                    rele = partes[20];
+                    rele = partes[18];
                     asignaRele(rele);
                     boolean rssiStatus = mBluetoothGatt.readRemoteRssi();
 
@@ -526,7 +552,7 @@ public class DatosActivity extends AppCompatActivity {
                 }
 
             }else{
-                tvTrama.setText("Conexión caída, reconectando...");
+                tvEstado.setText("Conexión caída, reconectando...");
 
                 gatt.close();
                 mBluetoothGatt = dispositivo.connectGatt(getApplicationContext(),false, mGattCallback);//Intento reconectar
@@ -638,10 +664,12 @@ public class DatosActivity extends AppCompatActivity {
 
             switch (marcha){
                 case "0":
-                    ledMarcha.setImageResource(R.drawable.led_verde);
+                    //ledMarcha.setImageResource(R.drawable.led_verde);
+                    ledMarcha.setImageResource(R.drawable.verde);
                     break;
                 case "1":
-                    ledMarcha.setImageResource(R.drawable.led_rojo);
+                    //ledMarcha.setImageResource(R.drawable.led_rojo);
+                    ledMarcha.setImageResource(R.drawable.rojo);
                     break;
             }
         }
@@ -652,18 +680,24 @@ public class DatosActivity extends AppCompatActivity {
             switch(estado){
                 case "1":
                     estado = "No Disponible";
+                    //ledGPS.setImageResource(R.drawable.led_rojo);
+                    ledGPS.setImageResource(R.drawable.rojo);
                     break;
                 case "2":
                     estado = "2D";
+                    //ledGPS.setImageResource(R.drawable.led_verde);
+                    ledGPS.setImageResource(R.drawable.naranja);
                     break;
                 case "3":
                     estado = "3D";
+                    //ledGPS.setImageResource(R.drawable.led_verde);
+                    ledGPS.setImageResource(R.drawable.verde);
                     break;
             }
             return estado;
         }
 
-        //Trama N/S E/W:
+        /*//Trama N/S E/W:
         public String asignaTramaNSEW(String trama){
             switch (trama){
                 case "N":
@@ -680,16 +714,16 @@ public class DatosActivity extends AppCompatActivity {
                     break;
             }
             return trama;
-        }
+        }*/
 
         //Giro Cuba
         public String asignaGiro(String giro){
             switch (giro){
                 case "false":
-                    giro = "Mezclando; Giro drcha";
+                    giro = "Mezclando;\nGiro drcha";
                     break;
                 case "true":
-                    giro = "Descargando; Giro izda";
+                    giro = "Descargando;\nGiro izda";
                     break;
             }
             return giro;
@@ -698,19 +732,19 @@ public class DatosActivity extends AppCompatActivity {
         public void asignaCAN(String valor){
 
             if(valor.equals("0")){
-                Drawable image = ContextCompat.getDrawable(getApplicationContext(), R.drawable.led_rojo_enano);
+                Drawable image = ContextCompat.getDrawable(getApplicationContext(), R.drawable.rojo_peque);
                 image.setBounds(0,0,60,60);
                 btnCAN.setCompoundDrawables(null, null, image, null);
                 //ledCan.setImageResource(R.drawable.led_rojo);
             }
             if(valor.equals("1") || valor.equals("2")){
-                Drawable image = ContextCompat.getDrawable(getApplicationContext(), R.drawable.led_verde_enano);
+                Drawable image = ContextCompat.getDrawable(getApplicationContext(), R.drawable.verde_peque);
                 image.setBounds(0,0,60,60);
                 btnCAN.setCompoundDrawables(null, null, image, null);
                 //ledCan.setImageResource(R.drawable.led_verde);
             }
             if(valor.equals("3")){
-                Drawable image = ContextCompat.getDrawable(getApplicationContext(), R.drawable.led_apagado_enano);
+                Drawable image = ContextCompat.getDrawable(getApplicationContext(), R.drawable.gris_peque);
                 image.setBounds(0,0,60,60);
                 btnCAN.setCompoundDrawables(null, null, image, null);
                 //ledCan.setImageResource(R.drawable.led_apagado);
@@ -719,13 +753,13 @@ public class DatosActivity extends AppCompatActivity {
 
         public void asignaRele(String valor){
             if(valor.equals("0")){
-                Drawable image = ContextCompat.getDrawable(getApplicationContext(), R.drawable.led_rojo_enano);
+                Drawable image = ContextCompat.getDrawable(getApplicationContext(), R.drawable.rojo_peque);
                 image.setBounds(0,0,60,60);
                 btnRele.setCompoundDrawables(null, null, image, null);
                 //ledRele.setImageResource(R.drawable.led_rojo);
             }
             if(valor.equals("1")){
-                Drawable image = ContextCompat.getDrawable(getApplicationContext(), R.drawable.led_verde_enano);
+                Drawable image = ContextCompat.getDrawable(getApplicationContext(), R.drawable.verde_peque);
                 image.setBounds(0,0,60,60);
                 btnRele.setCompoundDrawables(null, null, image, null);
                 //ledRele.setImageResource(R.drawable.led_verde);
