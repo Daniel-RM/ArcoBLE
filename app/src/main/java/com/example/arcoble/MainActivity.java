@@ -1,13 +1,11 @@
 package com.example.arcoble;
 
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.Manifest;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
-import android.bluetooth.BluetoothGattCallback;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -15,20 +13,22 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.os.Handler;
 import android.provider.Settings;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
 
     ArrayList<DeviceBLE> listaDispositivos = new ArrayList<DeviceBLE>();
     ArrayAdapter<DeviceBLE> adaptador ;
+    AdaptadorDispositivos adaptadorDispositivos;
 
     BluetoothAdapter myAdapter = BluetoothAdapter.getDefaultAdapter();
 
@@ -55,9 +56,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        //Quito la ActionBar, ya que uso un toolbar personalizado
-        //getSupportActionBar().hide();
 
         //Mantengo la aplicación fija en vertical
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
@@ -73,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
         scanListView = findViewById(R.id.listView);
 
         progressBar.setVisibility(View.INVISIBLE);
+
 
         ///////////////////////////   PERMISOS   ////////////////////////////////////////////////////////
 
@@ -123,7 +122,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-
         //Botón para salir de la aplicación
         btnSalir.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -132,8 +130,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        adaptador = new ArrayAdapter<DeviceBLE>(getApplicationContext(), android.R.layout.simple_list_item_1,listaDispositivos);
-        scanListView.setAdapter(adaptador);
+        adaptadorDispositivos = new AdaptadorDispositivos(this);
+        scanListView.setAdapter(adaptadorDispositivos);
 
         scanListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -145,12 +143,45 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra("Dispositivo", dispositivo);
                 startActivity(intent);
 
-                //mBluetoothGatt = deviceSelected.connectGatt(getApplicationContext(),false, mGattCallback);
                 Toast.makeText(getApplicationContext(), deviceSelected.getName(),Toast.LENGTH_LONG).show();
-
             }
         });
+    }
 
+    public class AdaptadorDispositivos extends ArrayAdapter<DeviceBLE>{
+
+        AppCompatActivity appCompatActivity;
+
+        AdaptadorDispositivos(AppCompatActivity context) {
+            super(context, R.layout.item_row, listaDispositivos);
+            appCompatActivity = context;
+        }
+
+        public View getView(int position, View convertView, ViewGroup parent){
+            LayoutInflater inflater = appCompatActivity.getLayoutInflater();
+            View item = inflater.inflate(R.layout.item_row, null);
+
+            TextView textView1 = item.findViewById(R.id.txtNombre);
+            textView1.setText(listaDispositivos.get(position).getName());
+
+            ImageView imageView1 = item.findViewById(R.id.imageView);
+
+            if(listaDispositivos.get(position).getRssi() >= -50){
+                imageView1.setImageResource(R.drawable.senal_100);
+            }else if(listaDispositivos.get(position).getRssi()>= -70 && listaDispositivos.get(position).getRssi()< -50){
+                imageView1.setImageResource(R.drawable.senal_100);
+            }else if(listaDispositivos.get(position).getRssi()>= -80 && listaDispositivos.get(position).getRssi()< -70){
+                imageView1.setImageResource(R.drawable.senal_75);
+            }else if(listaDispositivos.get(position).getRssi()>= -90 && listaDispositivos.get(position).getRssi() < -80){
+                imageView1.setImageResource(R.drawable.senal_50);
+            }else if(listaDispositivos.get(position).getRssi()>= -95 && listaDispositivos.get(position).getRssi() < -90){
+                imageView1.setImageResource(R.drawable.senal_25);
+            }else if(listaDispositivos.get(position).getRssi() < -95){
+                imageView1.setImageResource(R.drawable.senal_0);
+            }
+
+            return (item);
+        }
     }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -188,17 +219,13 @@ public class MainActivity extends AppCompatActivity {
                 for(DeviceBLE dev : listaDispositivos){
                     mapa.put(dev.toString(),dev);
                 }
-                mapa.put(device.getName(), new DeviceBLE(device.getName(), device));
-
-
+                mapa.put(device.getName(), new DeviceBLE(device.getName(), device, rssi));
                 listaDispositivos.clear();
                 listaDispositivos.addAll(mapa.values());
-                adaptador.notifyDataSetChanged();
-
+                adaptadorDispositivos.notifyDataSetChanged();
             }
         }
     };
-
 
     public void salir(){
         if(mBluetoothGatt != null){
@@ -210,10 +237,8 @@ public class MainActivity extends AppCompatActivity {
         }else {
             Intent intent = new Intent(Intent.ACTION_MAIN);
             finishAffinity();
-
         }
     }
-
 
     class Hilo extends Thread{
         @Override
@@ -221,7 +246,8 @@ public class MainActivity extends AppCompatActivity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    adaptador.clear();
+                   // adaptador.clear();
+
                     myAdapter.startLeScan(mLeScanCallback);
 
                     try {
@@ -237,6 +263,10 @@ public class MainActivity extends AppCompatActivity {
             });
         }
     }
-
 }
+
+
+
+
+
 

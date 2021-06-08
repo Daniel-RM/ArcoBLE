@@ -1,8 +1,6 @@
 package com.example.arcoble;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
@@ -10,38 +8,40 @@ import android.bluetooth.BluetoothGattCallback;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothProfile;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
 
 public class DatosActivity extends AppCompatActivity {
 
     TextView tvEstado, tvEstado2, tvID;
     TextView tvConexionRed, tvConexionInternet, tvServicio, tvMarcha, tvPulsos, tvAnalogica, tvAnalogica2, tvCuba, tvGiroCuba, tvLatitud, tvLongitud, tvEstadoGPS, tvSatelites, tvRssi;
     EditText etID;
-    ImageView ledMarcha, ledGPS, imgSenal;
+    ImageView ledMarcha, ledGPS, imgSenal, imgRele, imgCan;
     Button btnRele, btnCAN, btnPosicion, btnID, btnDesconectar, btnCancelar;
 
     Bundle datos;
 
-    String conexionRed, conexionInternet, servicio, marcha, cuba, analogica, analogica2, pulsos, estadoGPS, tramaNS, latitud, tramaEW, longitud, orientacion, satelites, velocidad, giroCuba, icc, imei, can, rele, valor, idNuevo;
+    String conexionRed, conexionInternet, servicio, marcha, cuba, analogica, analogica2, pulsos, estadoGPS, tramaNS, latitud, tramaEW, longitud, satelites, giroCuba, icc, imei, can, rele, valor, idNuevo;
     int servic, contador;
     byte []value;
+    boolean conectado;
 
     BluetoothDevice dispositivo;
     public static BluetoothGatt mBluetoothGatt;
@@ -79,6 +79,8 @@ public class DatosActivity extends AppCompatActivity {
         //Mantengo la aplicación fija en vertical
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
+        conectado = false;
+
         datos = getIntent().getExtras();
         dispositivo = (BluetoothDevice) datos.get("Dispositivo");
 
@@ -104,6 +106,8 @@ public class DatosActivity extends AppCompatActivity {
         ledMarcha = findViewById(R.id.ledMarcha);
         ledGPS = findViewById(R.id.ledGPS);
         imgSenal = findViewById(R.id.imgSenal);
+        imgRele = findViewById(R.id.imgRele);
+        imgCan = findViewById(R.id.imgCan);
 
         btnRele = findViewById(R.id.btnRele);
         btnCAN = findViewById(R.id.btnCAN);
@@ -216,7 +220,6 @@ public class DatosActivity extends AppCompatActivity {
                                                                         e.printStackTrace();
                                                                     }
                                                                     salir();
-                                                                    //desconectar();
                                                                 }
                                                             })
                                                             .setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -226,6 +229,7 @@ public class DatosActivity extends AppCompatActivity {
                                                                     Toast.makeText(getApplicationContext(),"Ha pulsado no cambiar ID",Toast.LENGTH_LONG).show();
                                                                 }
                                                             });
+
                                                     AlertDialog titulo = alerta.create();
                                                     titulo.setTitle("Cambiar ID");
                                                     titulo.show();
@@ -259,10 +263,11 @@ public class DatosActivity extends AppCompatActivity {
                         tvID.setVisibility(View.INVISIBLE);
                         etID.setVisibility(View.INVISIBLE);
                         btnCancelar.setVisibility(View.INVISIBLE);
+                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(etID.getWindowToken(), 0);
                         return;
                     }
                 });
-
             }
         });
 
@@ -275,7 +280,6 @@ public class DatosActivity extends AppCompatActivity {
                 if(can == null){
                     Toast.makeText(getApplicationContext(),"Por favor, espere un momento a que llegue la trama", Toast.LENGTH_LONG).show();
                     can = "3";
-
                 }
 
                 if(can.equals("0")){
@@ -328,10 +332,10 @@ public class DatosActivity extends AppCompatActivity {
                             e.printStackTrace();
                         }
                         salir();
-                        //desconectar();
-
                     }
+
                 });
+
         AlertDialog titulo = alerta.create();
         titulo.setTitle("Activar bus CAN");
         titulo.show();
@@ -360,27 +364,25 @@ public class DatosActivity extends AppCompatActivity {
                             e.printStackTrace();
                         }
                         salir();
-                        //desconectar();
-
                     }
                 });
+
         AlertDialog titulo = alerta.create();
         titulo.setTitle("Desactivar bus CAN");
         titulo.show();
     }
 
 
-
     //Método para conectar al dispositivo BLE a través de un servidor GATT
     private final BluetoothGattCallback mGattCallback = new BluetoothGattCallback() {
         @Override
         public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
-            //super.onConnectionStateChange(gatt, status, newState);
+
             String intentAction;
 
             if (newState == BluetoothProfile.STATE_CONNECTED) {
                 tvEstado.setText("Conectado al servidor GATT. Intentando descubrir servicios");
-                //boolean rssiStatus = mBluetoothGatt.readRemoteRssi();
+                conectado = true;
 
                 try {
                     Thread.sleep(2000);
@@ -392,10 +394,10 @@ public class DatosActivity extends AppCompatActivity {
                 connectionState = STATE_CONNECTED;
                 broadcastUpdate(intentAction);
 
-
             } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
-                //tvEstado.setText("Desconectado del servidor GATT.");
+                conectado = false;
                 tvEstado.setText("Conexión caída. Reconectando...");
+                imgSenal.setImageResource(R.drawable.senal_0);
                 gatt.close();
                 mBluetoothGatt = dispositivo.connectGatt(getApplicationContext(),false, mGattCallback);//Intento reconectar
                 Log.e("Conexión caída:","Fallo en conexión. Reconectando...");
@@ -411,23 +413,19 @@ public class DatosActivity extends AppCompatActivity {
             if(status==BluetoothGatt.GATT_SUCCESS){
                 tvRssi.setText("Señal: " + rssi + " dBm");
 
-                if(rssi>= -50){
+                if(rssi>= -50  && conectado){
                     imgSenal.setImageResource(R.drawable.senal_100);
-                }
-                if(rssi>= -65 && rssi< -50){
+                }else if(rssi>= -70 && rssi< -50 && conectado){
+                    imgSenal.setImageResource(R.drawable.senal_100);
+                }else if(rssi>= -80 && rssi< -70 && conectado){
                     imgSenal.setImageResource(R.drawable.senal_75);
-                }
-                if(rssi>= -75 && rssi < -65){
+                }else if(rssi>= -90 && rssi < -80 && conectado){
                     imgSenal.setImageResource(R.drawable.senal_50);
-                }
-                if(rssi>= -95 && rssi < -75){
+                }else if(rssi>= -95 && rssi < -90 && conectado){
                     imgSenal.setImageResource(R.drawable.senal_25);
-                }
-                if(rssi < -95){
+                }else if(rssi < -95 || !conectado){
                     imgSenal.setImageResource(R.drawable.senal_0);
                 }
-
-
             }
         }
 
@@ -443,11 +441,8 @@ public class DatosActivity extends AppCompatActivity {
             if (status == BluetoothGatt.GATT_SUCCESS) {
 
                 services = new ArrayList<>();
-
                 services.addAll(gatt.getServices());
-
                 servic = gatt.getServices().size();
-                //tvEstado.setText(dispositivo.getName() + "          Nº de servicios:" + servic+"\n");
                 tvEstado.setText(dispositivo.getName());
 
 
@@ -456,13 +451,9 @@ public class DatosActivity extends AppCompatActivity {
                 }
 
                 caracEscritura = mBluetoothGatt.getService(uuidServ).getCharacteristic(uuidCarac);
-                //uuid = gatt.getServices().get(2).getUuid();
                 uuid = gatt.getServices().get(servic-1).getUuid();
-
                 BluetoothGattService servicio = mBluetoothGatt.getService(uuid);
-
                 caracteristicas = servicio.getCharacteristics();
-
                 mBluetoothGatt.readCharacteristic(caracteristicas.get(0));
                 broadcastUpdate(ACTION_GATT_SERVICES_DISCOVERED);
             }
@@ -474,8 +465,6 @@ public class DatosActivity extends AppCompatActivity {
         public void onCharacteristicRead(BluetoothGatt gatt,
                                          BluetoothGattCharacteristic characteristic,
                                          int status) {
-
-
             value = new byte[0];
             if (status == BluetoothGatt.GATT_SUCCESS) {
 
@@ -509,19 +498,13 @@ public class DatosActivity extends AppCompatActivity {
                     estadoGPS = partes[8];
                     tvEstadoGPS.setText("Estado GPS: " + asignaEstadoGPS(estadoGPS));
                     tramaNS = partes[9];
-                    //tvTramaNS.setText("Curso N/S: " + asignaTramaNSEW(tramaNS));
                     latitud = partes[10];
                     tvLatitud.setText("Latitud: " + trataCoordenada(latitud));
                     tramaEW = partes[11];
-                    //tvTramaEW.setText("Curso E/O: " + asignaTramaNSEW(tramaEW));
                     longitud = partes[12];
                     tvLongitud.setText("Longitud: " + trataCoordenada(longitud));
-                    //orientacion = partes[13];
-                    //tvOrientacion.setText("Orientación: " + orientacion + "º");
                     satelites = partes[13];
                     tvSatelites.setText("Nº Satélites: " + satelites);
-                    //velocidad = partes[15];
-                    //tvVelocidad.setText("Velocidad: " + velocidad + " km/h");
                     cuba = partes[14];
                     tvCuba.setText("Cuba: " + asignaGiro(cuba));
                     icc = partes[15];
@@ -531,7 +514,6 @@ public class DatosActivity extends AppCompatActivity {
                     rele = partes[18];
                     asignaRele(rele);
                     boolean rssiStatus = mBluetoothGatt.readRemoteRssi();
-
 
                 }catch(Exception e){
                     Log.e("Fallo trama", "Ha habido un error al recibir la trama");
@@ -560,8 +542,6 @@ public class DatosActivity extends AppCompatActivity {
             }
             tvEstado2.setText("ICC ID: " + icc + "\nIMEI: " + imei);
         }
-
-
 
         //////////////////Asigno valores///////////////////////////////////
 
@@ -697,25 +677,6 @@ public class DatosActivity extends AppCompatActivity {
             return estado;
         }
 
-        /*//Trama N/S E/W:
-        public String asignaTramaNSEW(String trama){
-            switch (trama){
-                case "N":
-                    trama = "Norte";
-                    break;
-                case "S":
-                    trama = "Sur";
-                    break;
-                case "E":
-                    trama = "Este";
-                    break;
-                case "W":
-                    trama = "Oeste";
-                    break;
-            }
-            return trama;
-        }*/
-
         //Giro Cuba
         public String asignaGiro(String giro){
             switch (giro){
@@ -732,37 +693,22 @@ public class DatosActivity extends AppCompatActivity {
         public void asignaCAN(String valor){
 
             if(valor.equals("0")){
-                Drawable image = ContextCompat.getDrawable(getApplicationContext(), R.drawable.rojo_peque);
-                image.setBounds(0,0,60,60);
-                btnCAN.setCompoundDrawables(null, null, image, null);
-                //ledCan.setImageResource(R.drawable.led_rojo);
+                imgCan.setImageResource(R.drawable.rojo);
             }
             if(valor.equals("1") || valor.equals("2")){
-                Drawable image = ContextCompat.getDrawable(getApplicationContext(), R.drawable.verde_peque);
-                image.setBounds(0,0,60,60);
-                btnCAN.setCompoundDrawables(null, null, image, null);
-                //ledCan.setImageResource(R.drawable.led_verde);
+                imgCan.setImageResource(R.drawable.verde);
             }
             if(valor.equals("3")){
-                Drawable image = ContextCompat.getDrawable(getApplicationContext(), R.drawable.gris_peque);
-                image.setBounds(0,0,60,60);
-                btnCAN.setCompoundDrawables(null, null, image, null);
-                //ledCan.setImageResource(R.drawable.led_apagado);
+                imgCan.setImageResource(R.drawable.gris);
             }
         }
 
         public void asignaRele(String valor){
             if(valor.equals("0")){
-                Drawable image = ContextCompat.getDrawable(getApplicationContext(), R.drawable.rojo_peque);
-                image.setBounds(0,0,60,60);
-                btnRele.setCompoundDrawables(null, null, image, null);
-                //ledRele.setImageResource(R.drawable.led_rojo);
+                imgRele.setImageResource(R.drawable.rojo);
             }
             if(valor.equals("1")){
-                Drawable image = ContextCompat.getDrawable(getApplicationContext(), R.drawable.verde_peque);
-                image.setBounds(0,0,60,60);
-                btnRele.setCompoundDrawables(null, null, image, null);
-                //ledRele.setImageResource(R.drawable.led_verde);
+                imgRele.setImageResource(R.drawable.verde);
             }
         }
 
@@ -773,24 +719,19 @@ public class DatosActivity extends AppCompatActivity {
             value = characteristic.getValue();
             valor = new String(value);
             Log.e("TAG","onCharacteristicRead: " + valor);
-            //super.onCharacteristicChanged(gatt, characteristic);
         }
 
 
         @Override
         public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
 
-            //mBluetoothGatt.readCharacteristic(caracteristicas.get(0));
             mBluetoothGatt.readCharacteristic(caracteristicas.get(1));
-            //mBluetoothGatt.readCharacteristic(caracEscritura);
             Log.d("Escribiendo","Escribiendo característica: " + characteristic.getStringValue(0));
 
         }
     };
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
 
     private void broadcastUpdate(final String action) {
         final Intent intent = new Intent(action);

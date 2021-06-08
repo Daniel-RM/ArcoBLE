@@ -34,7 +34,7 @@
         android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
         android:textAlignment="center"
-        android:textColor="@color/verdeArco"
+        android:textColor="@color/purple_700"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -90,8 +90,9 @@
     <LinearLayout
         android:id="@+id/layCamion"
         android:layout_width="200dp"
-        android:layout_height="160dp"
+        android:layout_height="150dp"
         android:orientation="vertical"
+        android:paddingLeft="20dp"
         app:layout_constraintStart_toEndOf="@+id/layConexion"
         app:layout_constraintTop_toBottomOf="@+id/tvMarcha">
 
@@ -141,7 +142,7 @@
         android:layout_marginTop="10dp"
         android:text="@string/marcha"
         android:textColor="@color/black"
-        app:layout_constraintStart_toEndOf="@+id/layConexion"
+        app:layout_constraintStart_toEndOf="@+id/ledMarcha"
         app:layout_constraintTop_toBottomOf="@+id/tvEstado2" />
 
     <ImageView
@@ -149,26 +150,70 @@
         android:layout_width="20dp"
         android:layout_height="25dp"
         android:layout_marginTop="10dp"
-        android:paddingBottom="5dp"
         android:contentDescription="@string/todo"
+        android:paddingBottom="5dp"
         android:src="@drawable/gris"
-        app:layout_constraintStart_toEndOf="@+id/tvMarcha"
+        app:layout_constraintStart_toEndOf="@+id/layConexion"
         app:layout_constraintTop_toBottomOf="@+id/tvEstado2" />
+
+    <ImageView
+        android:id="@+id/imgRele"
+        android:layout_width="20dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="13dp"
+        android:contentDescription="@string/todo"
+        android:paddingBottom="5dp"
+        android:src="@drawable/gris"
+        app:layout_constraintStart_toEndOf="@+id/btnRele"
+        app:layout_constraintTop_toBottomOf="@+id/layPosicion1" />
+
+    <ImageView
+        android:id="@+id/imgCan"
+        android:layout_width="20dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="12dp"
+        android:contentDescription="@string/todo"
+        android:paddingBottom="5dp"
+        android:src="@drawable/gris"
+        app:layout_constraintStart_toEndOf="@+id/btnRele"
+        app:layout_constraintTop_toBottomOf="@+id/imgRele" />
 
     <ImageView
         android:id="@+id/ledGPS"
         android:layout_width="20dp"
         android:layout_height="25dp"
-        android:paddingBottom="5dp"
         android:contentDescription="@string/todo"
+        android:paddingBottom="5dp"
         android:src="@drawable/gris"
-        app:layout_constraintStart_toEndOf="@+id/tvEstadoGPS"
-        app:layout_constraintTop_toBottomOf="@+id/tvSatelites" />
+        app:layout_constraintStart_toEndOf="@+id/layPosicion1"
+        app:layout_constraintTop_toTopOf="@+id/tvEstadoGPS" />
+
+    <Button
+        android:id="@+id/btnCAN"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="5dp"
+        android:text="@string/can"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnRele" />
+    <!--android:drawableRight="@drawable/gris_peque"-->
+
+    <Button
+        android:id="@+id/btnRele"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="5dp"
+        android:text="@string/rele"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/layPosicion1" />
+    <!--android:drawableRight="@drawable/gris_peque"-->
 
     <LinearLayout
         android:id="@+id/layPosicion1"
         android:layout_width="200dp"
-        android:layout_height="200dp"
+        android:layout_height="50dp"
         android:layout_marginStart="10dp"
         android:orientation="vertical"
         app:layout_constraintStart_toStartOf="parent"
@@ -189,25 +234,6 @@
             android:text="@string/longitud"
             android:textColor="@color/black" />
 
-        <Button
-            android:id="@+id/btnRele"
-            android:layout_width="150dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-
-            android:drawableRight="@drawable/gris_peque"
-            android:text="@string/rele" />
-
-        <Button
-            android:id="@+id/btnCAN"
-            android:layout_width="150dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:drawableRight="@drawable/gris_peque"
-            android:text="@string/can"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btnRele" />
-
 
     </LinearLayout>
 
@@ -215,11 +241,11 @@
         android:id="@+id/layPosicion2"
         android:layout_width="200dp"
         android:layout_height="150dp"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="10dp"
         android:orientation="vertical"
         android:paddingLeft="18dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/layCamion">
+        app:layout_constraintTop_toBottomOf="@+id/ledGPS">
 
 
         <Button
@@ -244,12 +270,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="11dp"
+        android:layout_marginTop="10dp"
         android:layout_marginEnd="15dp"
         android:text="@string/desconectar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/layPosicion1" />
+        app:layout_constraintTop_toBottomOf="@+id/layPosicion2" />
 
     <TextView
         android:id="@+id/tvSatelites"
@@ -257,16 +283,16 @@
         android:layout_height="25dp"
         android:text="@string/satelites"
         android:textColor="@color/black"
-        app:layout_constraintStart_toEndOf="@+id/layPosicion1"
+        app:layout_constraintStart_toEndOf="@+id/ledGPS"
         app:layout_constraintTop_toBottomOf="@+id/layCamion" />
 
     <TextView
         android:id="@+id/tvEstadoGPS"
         android:layout_width="130dp"
-        android:layout_height="25dp"
+        android:layout_height="35dp"
         android:text="@string/estadoGPS"
         android:textColor="@color/black"
-        app:layout_constraintStart_toEndOf="@+id/layPosicion1"
+        app:layout_constraintStart_toEndOf="@+id/ledGPS"
         app:layout_constraintTop_toBottomOf="@+id/tvSatelites" />
 
     <TextView

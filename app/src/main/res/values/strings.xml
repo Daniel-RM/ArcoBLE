@@ -18,12 +18,12 @@
     <string name="conexionInternet">Conexión Internet: </string>
     <string name="servicioARCO">Servicio ARCO: </string>
     <string name="servicioASOS">Servicio ASOS: </string>
-    <string name="marcha">Estado marcha: </string>
+    <string name="marcha">Estado marcha </string>
     <string name="cuba">Vueltas p/m: </string>
     <string name="analogica">Presión: </string>
     <string name="analogica2">Temperatura: </string>
     <string name="pulsos">Contador de Pulsos: </string>
-    <string name="estadoGPS">Estado GPS: </string>
+    <string name="estadoGPS">Estado GPS </string>
     <string name="tramaNS">Curso N/S: </string>
     <string name="tramaEW">Curso E/O: </string>
     <string name="latitud">Latitud: </string>
