@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
     private int REQUEST_ENABLE_BT = 1;
 
     ArrayList<DeviceBLE> listaDispositivos = new ArrayList<DeviceBLE>();
-    ArrayAdapter<DeviceBLE> adaptador ;
+    //ArrayAdapter<DeviceBLE> adaptador ;
     AdaptadorDispositivos adaptadorDispositivos;
 
     BluetoothAdapter myAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -223,6 +223,7 @@ public class MainActivity extends AppCompatActivity {
                 listaDispositivos.clear();
                 listaDispositivos.addAll(mapa.values());
                 adaptadorDispositivos.notifyDataSetChanged();
+
             }
         }
     };
@@ -247,7 +248,7 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                    // adaptador.clear();
-
+                    adaptadorDispositivos.clear();
                     myAdapter.startLeScan(mLeScanCallback);
 
                     try {
@@ -259,6 +260,7 @@ public class MainActivity extends AppCompatActivity {
                     myAdapter.stopLeScan(mLeScanCallback);
                     scanListView.setVisibility(View.VISIBLE);
                     progressBar.setVisibility(View.INVISIBLE);
+                    Toast.makeText(getApplicationContext(), "Por favor, pulse en el dispositivo al que se quiera conectar", Toast.LENGTH_LONG).show();
                 }
             });
         }
