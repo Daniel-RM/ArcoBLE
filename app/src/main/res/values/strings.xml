@@ -6,9 +6,9 @@
     <string name="posicion">Ver Mapa</string>
     <string name="rele">Relé</string>
     <string name="id">Cambiar ID</string>
-    <string name="can">CAN</string>
+    <string name="can"> Lectura CAN</string>
     <string name="idModulo">ID Módulo:</string>
-    <string name="rssi">Señal:</string>
+    <string name="rssi">Señal Bluetooth:</string>
     <string name="desconectar">Desconectar</string>
     <string name="cancelar">Cancelar</string>
 
@@ -34,4 +34,17 @@
     <string name="giroCuba">Cuba: </string>
     <string name="todo">TODO</string>
     <string name="title_activity_maps">Map</string>
+
+    <!--TextView´s de Datos2Activity-->
+    <string name="icc">ICC: </string>
+    <string name="imei">IMEI: </string>
+    <string name="marcha_2">I1 - Marcha: </string>
+    <string name="cuba_2">I2 + I3 - RPM: </string>
+    <string name="analogica_2">A2 - Presión: </string>
+    <string name="analogica2_2">A1 - Temperatura: </string>
+    <string name="analogica3_2">A3 - Aux: </string>
+    <string name="pulsos_2">C1 - Contador: </string>
+    <string name="pulsos2_2">C2 - Contador: </string>
+    <string name="giroCuba_2">I2 + I3 - Giro: </string>
+
 </resources>

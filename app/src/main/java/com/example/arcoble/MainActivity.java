@@ -139,6 +139,7 @@ public class MainActivity extends AppCompatActivity {
                 BluetoothDevice deviceSelected = listaDispositivos.get(position).getMAC();
                 dispositivo = deviceSelected;
 
+                //Intent intent = new Intent(getApplicationContext(), Datos2Activity.class);
                 Intent intent = new Intent(getApplicationContext(), DatosActivity.class);
                 intent.putExtra("Dispositivo", dispositivo);
                 startActivity(intent);

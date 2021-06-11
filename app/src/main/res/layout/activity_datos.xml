@@ -74,7 +74,7 @@
             android:layout_height="35dp"
             android:text="@string/conexionInternet"
             android:textColor="@color/black"
-            app:layout_constraintEnd_toStartOf="@+id/tvPulsos"
+            app:layout_constraintEnd_toStartOf="@+id/tvGiro"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvConexionRed" />
 
@@ -97,35 +97,35 @@
         app:layout_constraintTop_toBottomOf="@+id/tvMarcha">
 
         <TextView
-            android:id="@+id/tvPulsos"
+            android:id="@+id/tvGiro"
             android:layout_width="match_parent"
             android:layout_height="25dp"
             android:text="@string/pulsos"
             android:textColor="@color/black" />
 
         <TextView
-            android:id="@+id/tvAnalogica"
+            android:id="@+id/tvRpm"
             android:layout_width="match_parent"
             android:layout_height="25dp"
             android:text="@string/analogica"
             android:textColor="@color/black" />
 
         <TextView
-            android:id="@+id/tvAnalogica2"
+            android:id="@+id/tvTemperatura"
             android:layout_width="match_parent"
             android:layout_height="25dp"
             android:text="@string/analogica2"
             android:textColor="@color/black" />
 
         <TextView
-            android:id="@+id/tvCuba"
+            android:id="@+id/tvPresion"
             android:layout_width="match_parent"
             android:layout_height="35dp"
             android:text="@string/giroCuba"
             android:textColor="@color/black" />
 
         <TextView
-            android:id="@+id/tvGiroCuba"
+            android:id="@+id/tvAux"
             android:layout_width="match_parent"
             android:layout_height="25dp"
             android:paddingTop="5dp"

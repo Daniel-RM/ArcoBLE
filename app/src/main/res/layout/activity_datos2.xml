@@ -1,0 +1,358 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".DatosActivity">
+
+    <View
+        android:id="@+id/divider4"
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:layout_marginTop="280dp"
+        android:background="@color/verdeArco"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider2" />
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/tvEstado"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="20dp"
+        android:background="@color/verdeArco"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+
+
+    <LinearLayout
+        android:id="@+id/layConexion"
+        android:layout_width="190dp"
+        android:layout_height="200dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="10dp"
+        android:orientation="vertical"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        app:layout_constraintEnd_toStartOf="@+id/layCamion"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvEstado">
+
+        <TextView
+            android:id="@+id/tvIcc"
+            android:layout_width="match_parent"
+            android:layout_height="31dp"
+            android:text="@string/icc"
+            android:textColor="@color/black"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/tvImei"
+            android:layout_width="match_parent"
+            android:layout_height="31dp"
+            android:text="@string/imei"
+            android:textColor="@color/black"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/tvRssi"
+            android:layout_width="match_parent"
+            android:layout_height="31dp"
+            android:text="@string/rssi"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/tvConexionRed"
+            android:layout_width="match_parent"
+            android:layout_height="31dp"
+            android:text="@string/conexionRed"
+            android:textColor="@color/black"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvEstado2" />
+
+        <TextView
+            android:id="@+id/tvConexionInternet"
+            android:layout_width="match_parent"
+            android:layout_height="31dp"
+            android:text="@string/conexionInternet"
+            android:textColor="@color/black"
+            app:layout_constraintEnd_toStartOf="@+id/tvGiro"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvConexionRed" />
+
+        <TextView
+            android:id="@+id/tvServicio"
+            android:layout_width="match_parent"
+            android:layout_height="31dp"
+            android:text="@string/servicioARCO"
+            android:textColor="@color/black" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layCamion"
+        android:layout_width="190dp"
+        android:layout_height="200dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="20dp"
+        android:orientation="vertical"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/layConexion"
+        app:layout_constraintTop_toBottomOf="@+id/tvEstado">
+
+        <TextView
+            android:id="@+id/tvMarcha"
+            android:layout_width="match_parent"
+            android:layout_height="25dp"
+            android:text="@string/marcha_2"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/tvGiro"
+            android:layout_width="match_parent"
+            android:layout_height="25dp"
+            android:text="@string/giroCuba_2"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/tvRpm"
+            android:layout_width="match_parent"
+            android:layout_height="25dp"
+            android:text="@string/cuba_2"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/tvTemperatura"
+            android:layout_width="match_parent"
+            android:layout_height="25dp"
+            android:text="@string/analogica2_2"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/tvPresion"
+            android:layout_width="match_parent"
+            android:layout_height="25dp"
+            android:text="@string/analogica_2"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/tvAux"
+            android:layout_width="match_parent"
+            android:layout_height="25dp"
+            android:text="@string/analogica3_2"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/tvContador"
+            android:layout_width="match_parent"
+            android:layout_height="25dp"
+            android:text="@string/pulsos_2"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/tvContador2"
+            android:layout_width="match_parent"
+            android:layout_height="25dp"
+            android:text="@string/pulsos2_2"
+            android:textColor="@color/black" />
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/layPosicion1"
+        android:layout_width="200dp"
+        android:layout_height="100dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="20dp"
+        android:orientation="vertical"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/layConexion">
+
+
+        <TextView
+            android:id="@+id/tvLatitud"
+            android:layout_width="match_parent"
+            android:layout_height="25dp"
+            android:text="@string/latitud"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/tvLongitud"
+            android:layout_width="match_parent"
+            android:layout_height="25dp"
+            android:text="@string/longitud"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/tvSatelites"
+            android:layout_width="match_parent"
+            android:layout_height="25dp"
+            android:text="@string/satelites"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/tvEstadoGPS"
+            android:layout_width="match_parent"
+            android:layout_height="25dp"
+            android:text="@string/estadoGPS"
+            android:textColor="@color/black" />
+
+    </LinearLayout>
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:layout_marginBottom="10dp"
+        android:background="@color/verdeArco"
+        app:layout_constraintBottom_toTopOf="@+id/layPosicion1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <View
+        android:id="@+id/divider2"
+        android:layout_width="3dp"
+        android:layout_height="228dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:background="@color/verdeArco"
+        app:layout_constraintBottom_toTopOf="@+id/divider"
+        app:layout_constraintEnd_toStartOf="@+id/layCamion"
+        app:layout_constraintStart_toEndOf="@+id/layConexion" />
+
+    <View
+        android:id="@+id/divider3"
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:layout_marginTop="120dp"
+        android:background="@color/verdeArco"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider2" />
+
+    <Button
+        android:id="@+id/btnPosicion"
+        android:layout_width="150dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="35dp"
+        android:layout_marginBottom="35dp"
+        android:text="@string/posicion"
+        app:layout_constraintBottom_toTopOf="@+id/divider3"
+        app:layout_constraintStart_toEndOf="@+id/layPosicion1"
+        app:layout_constraintTop_toBottomOf="@+id/divider" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="205dp"
+        android:layout_height="130dp"
+        android:layout_marginTop="20dp"
+        android:orientation="vertical"
+        android:paddingLeft="32dp"
+        app:layout_constraintEnd_toStartOf="@+id/linearLayout2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider3">
+
+        <Button
+            android:id="@+id/btnRele"
+            android:layout_width="150dp"
+            android:layout_height="50dp"
+            android:text="@string/rele" />
+
+        <Button
+            android:id="@+id/btnCAN"
+            android:layout_width="150dp"
+            android:layout_height="50dp"
+            android:text="@string/can"
+            android:translationY="10dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="205dp"
+        android:layout_height="130dp"
+        android:layout_marginTop="20dp"
+        android:orientation="vertical"
+        android:paddingLeft="25dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/linearLayout"
+        app:layout_constraintTop_toBottomOf="@+id/divider3">
+
+        <Button
+            android:id="@+id/btnID"
+            android:layout_width="150dp"
+            android:layout_height="50dp"
+            android:text="@string/id" />
+
+        <Button
+            android:id="@+id/btnDesconectar"
+            android:layout_width="150dp"
+            android:layout_height="50dp"
+            android:text="@string/desconectar"
+            android:translationY="10dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout3"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="10dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider4">
+
+        <TextView
+            android:id="@+id/tvID"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:text="@string/idModulo"
+            android:textColor="@color/black"
+            android:textSize="18sp" />
+
+        <EditText
+            android:id="@+id/etID"
+            android:layout_width="135dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:textAlignment="center" />
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btnCancel"
+        android:layout_width="150dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="160dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="160dp"
+        android:text="@string/cancelar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout3" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
