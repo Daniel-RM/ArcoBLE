@@ -14,15 +14,13 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -30,30 +28,33 @@ import java.util.UUID;
 
 public class Datos2Activity extends AppCompatActivity {
 
-    TextView tvEstado, tvID;
+    Context context;
+
+    TextView tvEstado;
     TextView tvIcc, tvImei, tvRssi, tvConexionRed, tvConexionInternet, tvServicio, tvMarcha, tvGiro, tvRpm, tvTemperatura,tvPresion, tvAux, tvContador, tvContador2, tvEstadoGPS, tvLatitud, tvLongitud, tvSatelites;
-    EditText etID;
     ImageView  imgSenal;
-    Button btnRele, btnCAN, btnPosicion, btnID, btnDesconectar, btnCancelar;
-    View divider;
+    Button  btnPosicion, btnID, btnRs232, btnDesconectar;
+    ToggleButton btnRele, btnCAN;
+
+    String datosCan;
 
     Bundle datos;
 
-    String conexionRed, conexionInternet, servicio, marcha, cuba, analogica, analogica2, pulsos, estadoGPS, tramaNS, latitud, tramaEW, longitud, satelites, giroCuba, icc, imei, can, rele, valor, idNuevo, aux, contador2;
-    int servic, contador;
+    static String conexionRed, conexionInternet, servicio, marcha, cuba, analogica, analogica2, pulsos, estadoGPS, tramaNS, latitud, tramaEW, longitud, satelites, giroCuba, icc, imei, can, rele, valor, idNuevo, aux, contador2;
+    int servic, contador, cuenta;
     byte []value;
-    boolean conectado;
+    boolean conectado, rs232;
 
-    BluetoothDevice dispositivo;
+    static BluetoothDevice dispositivo;
     public static BluetoothGatt mBluetoothGatt;
 
-    UUID uuidServ, uuidCarac;
+    UUID uuidServ, uuidCarac, uuidCaracCan;
     UUID uuid ;
 
     List<BluetoothGattService> services;
     List<BluetoothGattCharacteristic> caracteristicas;
 
-    BluetoothGattCharacteristic caracEscritura;
+    static BluetoothGattCharacteristic caracEscritura, caracCan;
 
     private int connectionState = STATE_DISCONNECTED;
 
@@ -77,16 +78,19 @@ public class Datos2Activity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_datos2);
 
+        context = this;
+
         //Mantengo la aplicación fija en vertical
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         conectado = false;
+        rs232 = false;
 
         datos = getIntent().getExtras();
         dispositivo = (BluetoothDevice) datos.get("Dispositivo");
+        idNuevo = dispositivo.getName();
 
         tvEstado = findViewById(R.id.tvEstado);
-        tvID = findViewById(R.id.tvID);
 
         tvIcc = findViewById(R.id.tvIcc);
         tvImei = findViewById(R.id.tvImei);
@@ -107,32 +111,27 @@ public class Datos2Activity extends AppCompatActivity {
         tvLongitud = findViewById(R.id.tvLongitud);
         tvSatelites = findViewById(R.id.tvSatelites);
 
-        etID = findViewById(R.id.etID);
         imgSenal = findViewById(R.id.imgSenal);
-
-        divider = findViewById(R.id.divider4);
 
         btnRele = findViewById(R.id.btnRele);
         btnCAN = findViewById(R.id.btnCAN);
         btnPosicion = findViewById(R.id.btnPosicion);
         btnID = findViewById(R.id.btnID);
+        btnRs232 = findViewById(R.id.btnRs232);
         btnDesconectar = findViewById(R.id.btnDesconectar);
-        btnCancelar = findViewById(R.id.btnCancel);
+
 
         //Servicio y característica creados en aplicación smartBasic
         uuidServ = UUID.fromString("00000333-0000-1000-8000-00805f9b34fb");//Servicio
         uuidCarac = UUID.fromString("00000777-0000-1000-8000-00805f9b34fb");//Característica
+        uuidCaracCan = UUID.fromString("00000888-0000-1000-8000-00805f9b34fb");//Característica para lectura datos CAN
 
 
         //mBluetoothGatt = deviceSelected.connectGatt(getApplicationContext(),false, mGattCallback);
         mBluetoothGatt = dispositivo.connectGatt(getApplicationContext(),false, mGattCallback);
 
-        tvID.setVisibility(View.INVISIBLE);
-        etID.setVisibility(View.INVISIBLE);
-        btnCancelar.setVisibility(View.INVISIBLE);
-        divider.setVisibility(View.INVISIBLE);
-
         imgSenal.setVisibility(View.VISIBLE);
+
 
         //////////////////////////////   BOTONES   //////////////////////////////////////////////////////////////
 
@@ -140,6 +139,17 @@ public class Datos2Activity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 desconectar();
+            }
+        });
+
+        btnRs232.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cuenta++;
+
+                caracEscritura.setValue("$z" + cuenta);
+                mBluetoothGatt.writeCharacteristic(caracEscritura);
+
             }
         });
 
@@ -187,94 +197,7 @@ public class Datos2Activity extends AppCompatActivity {
         btnID.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder alerta = new AlertDialog.Builder(Datos2Activity.this);
-                alerta.setMessage("¿Desea cambiar el ID del módulo?")
-                        .setCancelable(false)
-                        .setPositiveButton("Sí", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                tvID.setVisibility(View.VISIBLE);
-                                etID.setVisibility(View.VISIBLE);
-                                btnCancelar.setVisibility(View.VISIBLE);
-                                divider.setVisibility(View.VISIBLE);
-                                etID.setHint(dispositivo.getName());
-                                etID.setOnEditorActionListener(new TextView.OnEditorActionListener(){
-
-                                    @Override
-                                    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                                        if(actionId == EditorInfo.IME_ACTION_SEARCH || actionId==EditorInfo.IME_ACTION_DONE ||
-                                                event.getAction()==KeyEvent.ACTION_DOWN && event.getKeyCode() == KeyEvent.KEYCODE_ENTER){
-
-                                            if(etID.getText().toString().length()==10){
-                                                if(validarLetras(etID.getText().toString().substring(0,7)) && validarNumeros(etID.getText().toString().substring(7,10))){
-
-                                                    idNuevo = etID.getText().toString().toUpperCase();
-
-                                                    tvID.setVisibility(View.INVISIBLE);
-                                                    etID.setVisibility(View.INVISIBLE);
-
-                                                    alerta.setMessage("Se va a reiniciar el módulo y salir de la aplicación, para que el cambio de ID, se haga efectivo. Tendrá que esperar un minuto aprox. para poder volver a conectarse. ¿Quiere continuar?")
-                                                            .setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
-                                                                @Override
-                                                                public void onClick(DialogInterface dialog, int which) {
-                                                                    caracEscritura.setValue("$n" + idNuevo);
-                                                                    mBluetoothGatt.writeCharacteristic(caracEscritura);
-                                                                    try {
-                                                                        Thread.sleep(5000);
-                                                                    } catch (InterruptedException e) {
-                                                                        e.printStackTrace();
-                                                                    }
-                                                                    salir();
-                                                                }
-                                                            })
-                                                            .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                                                                @Override
-                                                                public void onClick(DialogInterface dialog, int which) {
-                                                                    dialog.cancel();
-                                                                    Toast.makeText(getApplicationContext(),"Ha pulsado no cambiar ID",Toast.LENGTH_LONG).show();
-                                                                }
-                                                            });
-
-                                                    AlertDialog titulo = alerta.create();
-                                                    titulo.setTitle("Cambiar ID");
-                                                    titulo.show();
-
-                                                }else{
-                                                    Toast.makeText(getApplicationContext(),"Por favor, el formato dle ID, debe ser 7 letras y 3 números", Toast.LENGTH_LONG).show();
-                                                }
-                                            }else{
-                                                Toast.makeText(getApplicationContext(),"Por favor, la longitud del ID, debe ser de 10 caracteres", Toast.LENGTH_LONG).show();
-                                            }
-                                        }
-                                        return false;
-                                    }
-                                });
-                            }
-                        })
-                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.cancel();
-                                Toast.makeText(getApplicationContext(),"Ha pulsado no cambiar ID",Toast.LENGTH_LONG).show();
-                            }
-                        });
-
-                AlertDialog titulo = alerta.create();
-                titulo.setTitle("Cambiar ID");
-                titulo.show();
-
-                btnCancelar.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        tvID.setVisibility(View.INVISIBLE);
-                        etID.setVisibility(View.INVISIBLE);
-                        divider.setVisibility(View.INVISIBLE);
-                        btnCancelar.setVisibility(View.INVISIBLE);
-                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                        imm.hideSoftInputFromWindow(etID.getWindowToken(), 0);
-                        return;
-                    }
-                });
+                new CuadroDialogo(context);
             }
         });
 
@@ -291,14 +214,17 @@ public class Datos2Activity extends AppCompatActivity {
 
                 if(can.equals("0")){
                     Toast.makeText(getApplicationContext(),"El bus CAN, está desactivado", Toast.LENGTH_LONG).show();
+                    btnCAN.setChecked(false);
                     activarCAN();
                 }
                 if(can.equals("1")){
                     Toast.makeText(getApplicationContext(),"El bus CAN, está activado, pero no tiene comunicación", Toast.LENGTH_LONG).show();
+                    btnCAN.setChecked(true);
                     desactivarCAN();
                 }
                 if(can.equals("2")){
                     Toast.makeText(getApplicationContext(),"El bus CAN está OK, activado y con comunicación", Toast.LENGTH_LONG).show();
+                    btnCAN.setChecked(true);
                     desactivarCAN();
                 }
             }
@@ -309,11 +235,11 @@ public class Datos2Activity extends AppCompatActivity {
     }
 
 
-    public boolean validarLetras(String cadena){
+    public static boolean validarLetras(String cadena){
         return cadena.matches("[a-zA-Z]*");
     }
 
-    public boolean validarNumeros(String cadena){
+    public static boolean validarNumeros(String cadena){
         return cadena.matches("[0-9]*");
     }
 
@@ -338,7 +264,7 @@ public class Datos2Activity extends AppCompatActivity {
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
-                        salir();
+                       // salir();
                     }
                 });
 
@@ -369,7 +295,7 @@ public class Datos2Activity extends AppCompatActivity {
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
-                        salir();
+                        //salir();
                     }
                 });
 
@@ -449,18 +375,27 @@ public class Datos2Activity extends AppCompatActivity {
                 services = new ArrayList<>();
                 services.addAll(gatt.getServices());
                 servic = gatt.getServices().size();
-                tvEstado.setText(dispositivo.getName());
-
+                //tvEstado.setText(dispositivo.getName());
+                tvEstado.setText(idNuevo);
 
                 for(int i=0;i<servic;i++){
                     Log.d("onServicesDiscovered","uuid::" + gatt.getServices().get(i).getUuid());
                 }
 
                 caracEscritura = mBluetoothGatt.getService(uuidServ).getCharacteristic(uuidCarac);
+                caracCan = mBluetoothGatt.getService(uuidServ).getCharacteristic(uuidCaracCan);
                 uuid = gatt.getServices().get(servic-1).getUuid();
                 BluetoothGattService servicio = mBluetoothGatt.getService(uuid);
                 caracteristicas = servicio.getCharacteristics();
-                mBluetoothGatt.readCharacteristic(caracteristicas.get(0));
+
+                /*mBluetoothGatt.readCharacteristic(caracteristicas.get(0));
+                mBluetoothGatt.readCharacteristic(caracEscritura);*/
+
+                for(int i=0;i<caracteristicas.size();i++){
+                    mBluetoothGatt.readCharacteristic(caracteristicas.get(i));
+                }
+
+
                 broadcastUpdate(ACTION_GATT_SERVICES_DISCOVERED);
             }
         }
@@ -471,69 +406,100 @@ public class Datos2Activity extends AppCompatActivity {
         public void onCharacteristicRead(BluetoothGatt gatt,
                                          BluetoothGattCharacteristic characteristic,
                                          int status) {
+
+           // rs232 = false;
+
             value = new byte[0];
             if (status == BluetoothGatt.GATT_SUCCESS) {
 
                 value = characteristic.getValue();
                 valor = new String(value);
+
+
                 Log.d("TAG","onCharacteristicRead: " + valor);
 
 
-                valor = valor.replace("$d,","");
+                if(valor.startsWith("$d")) {
 
-                try {
-                    //Separo la trama
-                    String[] partes = valor.split("\\|");
-                    conexionRed = partes[0];
-                    tvConexionRed.setText("Red: " + asignaConexionRed(conexionRed));
-                    conexionInternet = partes[1];
-                    tvConexionInternet.setText("Internet: " + asignaConexionInternet(conexionInternet));
-                    servicio = partes[2];
-                    tvServicio.setText("Servicio ARCO: " + asignaServicio(servicio));
-                    marcha = partes[3];
-                    tvMarcha.setText("I1 - Marcha: " + asignaMarcha(marcha));
-                    //asignaMarcha(marcha);
-                    giroCuba = partes[4];
-                    tvRpm.setText("I2 + I3 - RPM: " + giroCuba + " rpm");
-                    analogica = partes[5];
-                    tvPresion.setText("A2 - Presión: " + analogica + " mv");
-                    analogica2 = partes[6];
-                    tvTemperatura.setText("A1 - Temperatura: " + analogica2 + " mv");
-                    pulsos = partes[7];
-                    tvContador.setText("C1 - Contador : " + pulsos);
-                    estadoGPS = partes[8];
-                    tvEstadoGPS.setText("Estado GPS: " + asignaEstadoGPS(estadoGPS));
-                    tramaNS = partes[9];
-                    latitud = partes[10];
-                    tvLatitud.setText("Latitud: " + trataCoordenada(latitud));
-                    tramaEW = partes[11];
-                    longitud = partes[12];
-                    tvLongitud.setText("Longitud: " + trataCoordenada(longitud));
-                    satelites = partes[13];
-                    tvSatelites.setText("Nº Satélites: " + satelites);
-                    cuba = partes[14];
-                    tvGiro.setText("I2 + I3 - Giro: " + asignaGiro(cuba));
-                    icc = partes[15];
-                    tvIcc.setText("ICC: " + icc);
-                    imei = partes[16];
-                    tvImei.setText("IMEI: " + imei);
-                    can = partes[17];
-                    asignaCAN(can);
-                    rele = partes[18];
-                    asignaRele(rele);
-                    aux = partes[19];
-                        if(aux.equals("")){
-                            aux="0";
+                    valor = valor.replace(" $d,", "");
+
+                    try {
+                        //Separo la trama
+                        String[] partes = valor.split("\\|");
+                        conexionRed = partes[0];
+                        conexionRed = conexionRed.replace("$d,","");
+                        tvConexionRed.setText("Red: " + asignaConexionRed(conexionRed));
+                        conexionInternet = partes[1];
+                        tvConexionInternet.setText("Internet: " + asignaConexionInternet(conexionInternet));
+                        servicio = partes[2];
+                        tvServicio.setText("Servicio ARCO: " + asignaServicio(servicio));
+                        marcha = partes[3];
+                        tvMarcha.setText("I1 - Marcha: " + asignaMarcha(marcha));
+                        //asignaMarcha(marcha);
+                        giroCuba = partes[4];
+                        tvRpm.setText("I2 + I3 - RPM: " + giroCuba + " rpm");
+                        analogica = partes[5];
+                        tvPresion.setText("A2 - Presión: " + analogica + " mv");
+                        analogica2 = partes[6];
+                        tvTemperatura.setText("A1 - Temp: " + analogica2 + " mv");
+                        pulsos = partes[7];
+                        tvContador.setText("C1 - Contador : " + pulsos);
+                        estadoGPS = partes[8];
+                        tvEstadoGPS.setText("Estado GPS: " + asignaEstadoGPS(estadoGPS));
+                        tramaNS = partes[9];
+                        latitud = partes[10];
+                        tvLatitud.setText("Latitud: " + trataCoordenada(latitud));
+                        tramaEW = partes[11];
+                        longitud = partes[12];
+                        tvLongitud.setText("Longitud: " + trataCoordenada(longitud));
+                        satelites = partes[13];
+                        tvSatelites.setText("Nº Satélites: " + satelites);
+                        cuba = partes[14];
+                        tvGiro.setText("I2 + I3 - Giro: " + asignaGiro(cuba));
+                        icc = partes[15];
+                        tvIcc.setText("ICC: " + icc);
+                        imei = partes[16];
+                        tvImei.setText("IMEI: " + imei);
+                        can = partes[17];
+                        asignaCAN(can);
+                        rele = partes[18];
+                        asignaRele(rele);
+                        aux = partes[19];
+                        if (aux.equals("")) {
+                            aux = "0";
                         }
-                    tvAux.setText("A3 - Aux: " + aux);
-                    contador2 = partes[20];
-                    tvContador2.setText("C2 - Contador: " + contador2);
+                        tvAux.setText("A3 - Aux: " + aux);
+                        contador2 = partes[20];
+                        tvContador2.setText("C2 - Contador: " + contador2);
 
-                    boolean rssiStatus = mBluetoothGatt.readRemoteRssi();
 
-                }catch(Exception e){
-                    Log.e("Fallo trama", "Ha habido un error al recibir la trama");
-                    Log.e("TAG",e.getMessage());
+                        boolean rssiStatus = mBluetoothGatt.readRemoteRssi();
+
+
+                    } catch (Exception e) {
+                        Log.e("Fallo trama", "Ha habido un error al recibir la trama");
+                        Log.e("TAG", e.getMessage());
+                    }
+                }
+
+                ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+                if(valor.startsWith("$Z")){
+                    Log.i("Trama CAN","Valor recibido: " + valor);
+                    Log.i("Resultado prueba", "Satisfactoria");
+                    rs232 = true;
+                    notifica(rs232);
+                    }
+
+                if(valor.startsWith("$z")){
+                    Log.i("Trama CAN","Valor recibido: " + valor);
+                    Log.i("Resultado prueba","Fallida");
+                    rs232 = false;
+                    notifica(rs232);
+                    caracEscritura.setValue("$w" + contador);
+                    mBluetoothGatt.writeCharacteristic(caracEscritura);
+                    //caracEscritura.setValue("");
+                    //mBluetoothGatt.writeCharacteristic(caracEscritura);
                 }
 
                 try {
@@ -541,6 +507,7 @@ public class Datos2Activity extends AppCompatActivity {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+
                 broadcastUpdate(ACTION_DATA_AVAILABLE, characteristic);
 
                 try {
@@ -548,6 +515,7 @@ public class Datos2Activity extends AppCompatActivity {
                 }catch(Exception ex){
                     Log.e("Error característica","La característica está vacía");
                 }
+
 
             }else{
                 tvEstado.setText("Conexión caída, reconectando...");
@@ -711,9 +679,11 @@ public class Datos2Activity extends AppCompatActivity {
         public void asignaCAN(String valor){
 
             if(valor.equals("0")){
+                btnCAN.setChecked(false);
                // imgCan.setImageResource(R.drawable.rojo);
             }
             if(valor.equals("1") || valor.equals("2")){
+                btnCAN.setChecked(true);
                // imgCan.setImageResource(R.drawable.verde);
             }
             if(valor.equals("3")){
@@ -723,9 +693,11 @@ public class Datos2Activity extends AppCompatActivity {
 
         public void asignaRele(String valor){
             if(valor.equals("0")){
+                btnRele.setChecked(false);
               //  imgRele.setImageResource(R.drawable.rojo);
             }
             if(valor.equals("1")){
+                btnRele.setChecked(true);
                // imgRele.setImageResource(R.drawable.verde);
             }
         }
@@ -736,18 +708,46 @@ public class Datos2Activity extends AppCompatActivity {
         public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
             value = characteristic.getValue();
             valor = new String(value);
-            Log.e("TAG","onCharacteristicRead: " + valor);
+            Log.e("TAG","onCharacteristicRead cuando cambia: " + valor);
         }
 
 
         @Override
         public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
 
-            mBluetoothGatt.readCharacteristic(caracteristicas.get(1));
             Log.d("Escribiendo","Escribiendo característica: " + characteristic.getStringValue(0));
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            mBluetoothGatt.readCharacteristic(characteristic);
+
 
         }
     };
+
+    private void notifica(boolean correcto) {
+
+        if(correcto){
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(getApplicationContext(),"La prueba ha resultado satisfactoria", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+        }else{
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(getApplicationContext(),"La prueba ha resultado fallida", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+        }
+
+    }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////
 

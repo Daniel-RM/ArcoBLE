@@ -11,6 +11,9 @@
     <string name="rssi">Señal Bluetooth:</string>
     <string name="desconectar">Desconectar</string>
     <string name="cancelar">Cancelar</string>
+    <string name="aceptar">Aceptar</string>
+    <string name="cambioID">Cambiar ID Módulo</string>
+    <string name="info">Puerto RS-232</string>
 
 
     <!--Cabeceras TextView´s-->
@@ -46,5 +49,6 @@
     <string name="pulsos_2">C1 - Contador: </string>
     <string name="pulsos2_2">C2 - Contador: </string>
     <string name="giroCuba_2">I2 + I3 - Giro: </string>
+
 
 </resources>

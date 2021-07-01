@@ -139,12 +139,12 @@ public class MainActivity extends AppCompatActivity {
                 BluetoothDevice deviceSelected = listaDispositivos.get(position).getMAC();
                 dispositivo = deviceSelected;
 
-                //Intent intent = new Intent(getApplicationContext(), Datos2Activity.class);
-                Intent intent = new Intent(getApplicationContext(), DatosActivity.class);
+                Intent intent = new Intent(getApplicationContext(), Datos2Activity.class);//Versión 0.2
+                //Intent intent = new Intent(getApplicationContext(), DatosActivity.class);//Versión 0.1
                 intent.putExtra("Dispositivo", dispositivo);
                 startActivity(intent);
 
-                Toast.makeText(getApplicationContext(), deviceSelected.getName(),Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), deviceSelected.getName(),Toast.LENGTH_SHORT).show();
             }
         });
     }
