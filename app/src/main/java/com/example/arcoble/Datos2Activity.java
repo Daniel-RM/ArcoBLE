@@ -36,8 +36,6 @@ public class Datos2Activity extends AppCompatActivity {
     Button  btnPosicion, btnID, btnRs232, btnDesconectar;
     ToggleButton btnRele, btnCAN;
 
-    String datosCan;
-
     Bundle datos;
 
     static String conexionRed, conexionInternet, servicio, marcha, cuba, analogica, analogica2, pulsos, estadoGPS, tramaNS, latitud, tramaEW, longitud, satelites, giroCuba, icc, imei, can, rele, valor, idNuevo, aux, contador2;
@@ -86,12 +84,12 @@ public class Datos2Activity extends AppCompatActivity {
         conectado = false;
         rs232 = false;
 
+        //Recojo el dispositivo seleccionado de la lista de Main Activity
         datos = getIntent().getExtras();
         dispositivo = (BluetoothDevice) datos.get("Dispositivo");
         idNuevo = dispositivo.getName();
 
         tvEstado = findViewById(R.id.tvEstado);
-
         tvIcc = findViewById(R.id.tvIcc);
         tvImei = findViewById(R.id.tvImei);
         tvRssi = findViewById(R.id.tvRssi);
@@ -126,15 +124,13 @@ public class Datos2Activity extends AppCompatActivity {
         uuidCarac = UUID.fromString("00000777-0000-1000-8000-00805f9b34fb");//Característica
         uuidCaracCan = UUID.fromString("00000888-0000-1000-8000-00805f9b34fb");//Característica para lectura datos CAN
 
-
-        //mBluetoothGatt = deviceSelected.connectGatt(getApplicationContext(),false, mGattCallback);
         mBluetoothGatt = dispositivo.connectGatt(getApplicationContext(),false, mGattCallback);
 
         imgSenal.setVisibility(View.VISIBLE);
 
-
         //////////////////////////////   BOTONES   //////////////////////////////////////////////////////////////
 
+        //Botón que nos desconecta del dispositivo al que estamos conectados
         btnDesconectar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -142,14 +138,13 @@ public class Datos2Activity extends AppCompatActivity {
             }
         });
 
+        //Botón que realiza la prueba de comunicación por el puerto RS-232
         btnRs232.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 cuenta++;
-
                 caracEscritura.setValue("$z" + cuenta);
                 mBluetoothGatt.writeCharacteristic(caracEscritura);
-
             }
         });
 
@@ -234,7 +229,7 @@ public class Datos2Activity extends AppCompatActivity {
 
     }
 
-
+    //Métodos de validación al cambiar el ID del módulo
     public static boolean validarLetras(String cadena){
         return cadena.matches("[a-zA-Z]*");
     }
@@ -243,6 +238,7 @@ public class Datos2Activity extends AppCompatActivity {
         return cadena.matches("[0-9]*");
     }
 
+    //Método que activa la lectura de datos de la pinza CAN
     public void activarCAN(){
         AlertDialog.Builder alerta = new AlertDialog.Builder(Datos2Activity.this);
         alerta.setMessage("El bus CAN está desactivado. Se va a reiniciar el módulo y salir de la aplicación, para que la activación, se haga efectiva. Tendrá que esperar un minuto aprox. para poder volver a conectarse. ¿Realmente quiere continuar y activar el bus CAN?")
@@ -273,6 +269,7 @@ public class Datos2Activity extends AppCompatActivity {
         titulo.show();
     }
 
+    //Método que desactiva la lectura de datos de la pinza CAN
     public void desactivarCAN(){
 
         AlertDialog.Builder alerta = new AlertDialog.Builder(Datos2Activity.this);
@@ -295,7 +292,6 @@ public class Datos2Activity extends AppCompatActivity {
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
-                        //salir();
                     }
                 });
 
@@ -339,6 +335,7 @@ public class Datos2Activity extends AppCompatActivity {
             }
         }
 
+        //Método que dibuja un icono, dependiendo de la señal recibida
         @Override
         public void onReadRemoteRssi(BluetoothGatt gatt, int rssi, int status) {
             //super.onReadRemoteRssi(gatt, rssi, status);
@@ -375,7 +372,6 @@ public class Datos2Activity extends AppCompatActivity {
                 services = new ArrayList<>();
                 services.addAll(gatt.getServices());
                 servic = gatt.getServices().size();
-                //tvEstado.setText(dispositivo.getName());
                 tvEstado.setText(idNuevo);
 
                 for(int i=0;i<servic;i++){
@@ -388,13 +384,9 @@ public class Datos2Activity extends AppCompatActivity {
                 BluetoothGattService servicio = mBluetoothGatt.getService(uuid);
                 caracteristicas = servicio.getCharacteristics();
 
-                /*mBluetoothGatt.readCharacteristic(caracteristicas.get(0));
-                mBluetoothGatt.readCharacteristic(caracEscritura);*/
-
                 for(int i=0;i<caracteristicas.size();i++){
                     mBluetoothGatt.readCharacteristic(caracteristicas.get(i));
                 }
-
 
                 broadcastUpdate(ACTION_GATT_SERVICES_DISCOVERED);
             }
@@ -407,17 +399,13 @@ public class Datos2Activity extends AppCompatActivity {
                                          BluetoothGattCharacteristic characteristic,
                                          int status) {
 
-           // rs232 = false;
-
             value = new byte[0];
             if (status == BluetoothGatt.GATT_SUCCESS) {
 
                 value = characteristic.getValue();
                 valor = new String(value);
 
-
                 Log.d("TAG","onCharacteristicRead: " + valor);
-
 
                 if(valor.startsWith("$d")) {
 
@@ -435,7 +423,6 @@ public class Datos2Activity extends AppCompatActivity {
                         tvServicio.setText("Servicio ARCO: " + asignaServicio(servicio));
                         marcha = partes[3];
                         tvMarcha.setText("I1 - Marcha: " + asignaMarcha(marcha));
-                        //asignaMarcha(marcha);
                         giroCuba = partes[4];
                         tvRpm.setText("I2 + I3 - RPM: " + giroCuba + " rpm");
                         analogica = partes[5];
@@ -498,8 +485,7 @@ public class Datos2Activity extends AppCompatActivity {
                     notifica(rs232);
                     caracEscritura.setValue("$w" + contador);
                     mBluetoothGatt.writeCharacteristic(caracEscritura);
-                    //caracEscritura.setValue("");
-                    //mBluetoothGatt.writeCharacteristic(caracEscritura);
+
                 }
 
                 try {
@@ -605,7 +591,6 @@ public class Datos2Activity extends AppCompatActivity {
                     servicio = "Cerrando";
                     break;
                 case "6":
-                    //servicio = "Caído";
                     servicio = "Sin servicio";
                     break;
                 case "7":
@@ -629,11 +614,9 @@ public class Datos2Activity extends AppCompatActivity {
 
             switch (marcha){
                 case "0":
-                    //tvMarcha.setText("I1 - Marcha: ON" );
                     marcha = "ON";
                     break;
                 case "1":
-                    //tvMarcha.setText("I1 - Marcha: ON" );
                     marcha = "OFF";
                     break;
             }
@@ -646,18 +629,12 @@ public class Datos2Activity extends AppCompatActivity {
             switch(estado){
                 case "1":
                     estado = "No Disponible";
-                    //ledGPS.setImageResource(R.drawable.led_rojo);
-                    //ledGPS.setImageResource(R.drawable.rojo);
                     break;
                 case "2":
                     estado = "2D";
-                    //ledGPS.setImageResource(R.drawable.led_verde);
-                    //ledGPS.setImageResource(R.drawable.naranja);
                     break;
                 case "3":
                     estado = "3D";
-                    //ledGPS.setImageResource(R.drawable.led_verde);
-                    //ledGPS.setImageResource(R.drawable.verde);
                     break;
             }
             return estado;
@@ -680,25 +657,20 @@ public class Datos2Activity extends AppCompatActivity {
 
             if(valor.equals("0")){
                 btnCAN.setChecked(false);
-               // imgCan.setImageResource(R.drawable.rojo);
             }
             if(valor.equals("1") || valor.equals("2")){
                 btnCAN.setChecked(true);
-               // imgCan.setImageResource(R.drawable.verde);
             }
             if(valor.equals("3")){
-               // imgCan.setImageResource(R.drawable.gris);
             }
         }
 
         public void asignaRele(String valor){
             if(valor.equals("0")){
                 btnRele.setChecked(false);
-              //  imgRele.setImageResource(R.drawable.rojo);
             }
             if(valor.equals("1")){
                 btnRele.setChecked(true);
-               // imgRele.setImageResource(R.drawable.verde);
             }
         }
 
@@ -717,7 +689,7 @@ public class Datos2Activity extends AppCompatActivity {
 
             Log.d("Escribiendo","Escribiendo característica: " + characteristic.getStringValue(0));
             try {
-                Thread.sleep(2000);
+                Thread.sleep(2500);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -727,6 +699,7 @@ public class Datos2Activity extends AppCompatActivity {
         }
     };
 
+    //Notificación del resultado de la prueba de lectura por el puerto RS232
     private void notifica(boolean correcto) {
 
         if(correcto){
@@ -744,9 +717,7 @@ public class Datos2Activity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(),"La prueba ha resultado fallida", Toast.LENGTH_SHORT).show();
                 }
             });
-
         }
-
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -790,6 +761,7 @@ public class Datos2Activity extends AppCompatActivity {
         sendBroadcast(intent);
     }
 
+    //Método que desconecta del dispositivo
     public void desconectar(){
         if(mBluetoothGatt != null){
             mBluetoothGatt.close();

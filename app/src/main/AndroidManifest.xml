@@ -22,7 +22,6 @@
         android:roundIcon="@mipmap/iconoarco_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ArcoBLE">
-        <activity android:name=".CanActivity"></activity>
         <activity android:name=".Datos2Activity" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
@@ -39,7 +38,6 @@
         <activity
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps" />
-        <activity android:name=".DatosActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

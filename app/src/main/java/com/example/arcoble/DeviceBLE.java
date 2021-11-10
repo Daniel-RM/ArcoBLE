@@ -2,6 +2,7 @@ package com.example.arcoble;
 
 import android.bluetooth.BluetoothDevice;
 
+//Clase DeviceBLE
 public class DeviceBLE {
 
     private String name;

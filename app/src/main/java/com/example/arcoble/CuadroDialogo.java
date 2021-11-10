@@ -1,28 +1,20 @@
 package com.example.arcoble;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.view.KeyEvent;
 import android.view.View;
-import android.view.Window;
-import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+//Cuadro de diálogo para darle un nuevo identificador al módulo
 public class CuadroDialogo  {
 
     public CuadroDialogo(Context context){
 
         final Dialog dialogo = new Dialog(context);
-        //dialogo.requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
         dialogo.setCancelable(false);
-        //dialogo.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialogo.setContentView(R.layout.dialogo_id);
 
         TextView tvIdDialogTitle = dialogo.findViewById(R.id.tvIdDialogTitle);

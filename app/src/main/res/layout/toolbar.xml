@@ -2,39 +2,32 @@
 <androidx.appcompat.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:gravity="center">
 
     <LinearLayout
-        android:paddingTop="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:paddingTop="10dp">
 
 
         <ImageView
             android:id="@+id/imgSenal"
-            android:visibility="invisible"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:layout_weight="1"
+            android:layout_weight="0.2"
+            android:visibility="invisible"
             app:srcCompat="@drawable/senal_0" />
-
-        <TextView
-            android:layout_width="150dp"
-            android:layout_height="match_parent"
-            android:paddingTop="5dp"
-            android:text="@string/app_name"
-            android:textAlignment="center"
-            android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
-            android:textColor="@color/verdeArco"
-            android:textSize="35sp"
-            android:textStyle="normal" />
 
         <ImageView
 
             android:layout_width="180dp"
             android:layout_height="60dp"
-            android:src="@drawable/logo2" />
+            android:layout_weight="1"
+            android:src="@drawable/logotipo_arco_3"
+            android:translationX="-30dp" />
+
 
     </LinearLayout>
 

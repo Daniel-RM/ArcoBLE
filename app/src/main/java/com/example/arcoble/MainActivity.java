@@ -33,23 +33,16 @@ import java.util.Map;
 public class MainActivity extends AppCompatActivity {
 
     TextView tvEstado, tvEstado2;
-
     Button btnSalir, btnScan;
-
     ProgressBar progressBar;
-
     ListView scanListView;
 
     private int REQUEST_ENABLE_BT = 1;
 
     ArrayList<DeviceBLE> listaDispositivos = new ArrayList<DeviceBLE>();
-    //ArrayAdapter<DeviceBLE> adaptador ;
     AdaptadorDispositivos adaptadorDispositivos;
-
     BluetoothAdapter myAdapter = BluetoothAdapter.getDefaultAdapter();
-
     public static BluetoothGatt mBluetoothGatt;
-
     BluetoothDevice dispositivo;
 
     @Override
@@ -62,16 +55,12 @@ public class MainActivity extends AppCompatActivity {
 
         tvEstado = findViewById(R.id.tvEstado);
         tvEstado2 = findViewById(R.id.tvEstado2);
-
         btnSalir = findViewById(R.id.btnSalir);
         btnScan = findViewById(R.id.btnScan);
-
         progressBar = findViewById(R.id.progressBar);
-
         scanListView = findViewById(R.id.listView);
 
         progressBar.setVisibility(View.INVISIBLE);
-
 
         ///////////////////////////   PERMISOS   ////////////////////////////////////////////////////////
 
@@ -107,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "Dispositivo no compatible con Bluetooth_LE", Toast.LENGTH_SHORT).show();
             finish();
         }else{
-            Toast.makeText(getApplicationContext(), "Dispositivo compatible con BLE", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "Dispositivo compatible con BLE", Toast.LENGTH_SHORT).show();
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////
@@ -130,9 +119,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //Agrego un adaptador al ListView
         adaptadorDispositivos = new AdaptadorDispositivos(this);
         scanListView.setAdapter(adaptadorDispositivos);
 
+        //Cuando pulsan en un dispositivo de la lista, la aplicación se conecta a él vía Bluetooth LE
         scanListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -140,15 +131,13 @@ public class MainActivity extends AppCompatActivity {
                 dispositivo = deviceSelected;
 
                 Intent intent = new Intent(getApplicationContext(), Datos2Activity.class);//Versión 0.2
-                //Intent intent = new Intent(getApplicationContext(), DatosActivity.class);//Versión 0.1
                 intent.putExtra("Dispositivo", dispositivo);
                 startActivity(intent);
-
-                Toast.makeText(getApplicationContext(), deviceSelected.getName(),Toast.LENGTH_SHORT).show();
             }
         });
     }
 
+    //Clase del adaptador
     public class AdaptadorDispositivos extends ArrayAdapter<DeviceBLE>{
 
         AppCompatActivity appCompatActivity;
@@ -167,6 +156,7 @@ public class MainActivity extends AppCompatActivity {
 
             ImageView imageView1 = item.findViewById(R.id.imageView);
 
+            //Se determina la intensidad de la señal y se refleja en la aplicación
             if(listaDispositivos.get(position).getRssi() >= -50){
                 imageView1.setImageResource(R.drawable.senal_100);
             }else if(listaDispositivos.get(position).getRssi()>= -70 && listaDispositivos.get(position).getRssi()< -50){
@@ -229,6 +219,7 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+    //Método para salir de la aplicación
     public void salir(){
         if(mBluetoothGatt != null){
             mBluetoothGatt.close();
@@ -248,7 +239,6 @@ public class MainActivity extends AppCompatActivity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                   // adaptador.clear();
                     adaptadorDispositivos.clear();
                     myAdapter.startLeScan(mLeScanCallback);
 
@@ -261,7 +251,7 @@ public class MainActivity extends AppCompatActivity {
                     myAdapter.stopLeScan(mLeScanCallback);
                     scanListView.setVisibility(View.VISIBLE);
                     progressBar.setVisibility(View.INVISIBLE);
-                    Toast.makeText(getApplicationContext(), "Por favor, pulse en el dispositivo al que se quiera conectar", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Por favor, pulse en el dispositivo al que se quiera conectar", Toast.LENGTH_SHORT).show();
                 }
             });
         }

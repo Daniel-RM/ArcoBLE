@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".DatosActivity">
+    tools:context=".Datos2Activity">
 
     <include
         android:id="@+id/toolbar"
@@ -19,6 +19,7 @@
         android:layout_height="50dp"
         android:layout_marginTop="20dp"
         android:background="@color/verdeArco"
+        android:gravity="center"
         android:textAlignment="center"
         android:textColor="@color/black"
         android:textSize="18sp"
@@ -172,6 +173,7 @@
         android:layout_marginStart="10dp"
         android:layout_marginTop="20dp"
         android:orientation="vertical"
+        android:paddingLeft="10dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/layConexion">
 
@@ -241,12 +243,12 @@
         android:id="@+id/btnPosicion"
         android:layout_width="150dp"
         android:layout_height="50dp"
-        android:layout_marginStart="12dp"
         android:layout_marginTop="35dp"
+        android:layout_marginEnd="20dp"
         android:layout_marginBottom="35dp"
         android:text="@string/posicion"
         app:layout_constraintBottom_toTopOf="@+id/divider3"
-        app:layout_constraintStart_toEndOf="@+id/layPosicion1"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/divider" />
 
     <LinearLayout
@@ -300,7 +302,7 @@
         <Button
             android:id="@+id/btnRs232"
             android:layout_width="150dp"
-            android:layout_height="50dp"
+            android:layout_height="wrap_content"
             android:text="@string/info"
             android:translationY="10dp" />
 
